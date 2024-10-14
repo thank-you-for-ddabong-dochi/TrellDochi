@@ -8,9 +8,7 @@ import com.nbacm.trelldochi.domain.workspace.service.WorkSpaceAdminServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +23,19 @@ public class WorkSpaceAdminController {
                 ApiResponse.success(
                         "워크 스페이스 생성 성공",
                         workSpaceService.createWorkSpace(authUser.getEmail(), requestDto)
+                ));
+    }
+
+    @PatchMapping("/{workspaceId}")
+    public ResponseEntity<ApiResponse<WorkSpaceResponseDto>> updateWorkSpace(
+            @AuthenticationPrincipal AuthUser authUser,
+            WorkSpaceRequestDto requestDto,
+            @PathVariable Long workspaceId
+    ) {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "워크 스페이스 수정 성공",
+                        workSpaceService.updateWorkSpace(authUser.getEmail(), requestDto, workspaceId)
                 ));
     }
 }

@@ -42,4 +42,18 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
                 savedWorkSpace.getDescription()
         );
     }
+
+    @Override
+    @Transactional
+    public WorkSpaceResponseDto updateWorkSpace(String email, WorkSpaceRequestDto requestDto, Long workspaceId) {
+        WorkSpace workSpace = workSpaceRepository.findByUserEmailAndIdOrElseThrow(email, workspaceId);
+
+        WorkSpace updatedWorkSpace = workSpaceRepository.save(workSpace.update(requestDto));
+
+        return new WorkSpaceResponseDto(
+                updatedWorkSpace.getId(),
+                updatedWorkSpace.getName(),
+                updatedWorkSpace.getDescription()
+        );
+    }
 }
