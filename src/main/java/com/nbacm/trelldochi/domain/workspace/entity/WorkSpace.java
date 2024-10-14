@@ -19,6 +19,6 @@ public class WorkSpace {
     @OneToMany(mappedBy = "workSpace", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkSpaceMember> members;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "workSpace", cascade = CascadeType.ALL)
     private List<Board> boards;
 }

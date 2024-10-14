@@ -15,7 +15,7 @@ public class TodoList {
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
-    private Long order;
+    private Long listOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
