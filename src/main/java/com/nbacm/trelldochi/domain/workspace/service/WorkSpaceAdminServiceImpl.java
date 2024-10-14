@@ -7,6 +7,7 @@ import com.nbacm.trelldochi.domain.user.repository.UserRepository;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceRequestDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceResponseDto;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpace;
+import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceAccessDeniedException;
 import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,8 +47,8 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     @Override
     @Transactional
     public WorkSpaceResponseDto updateWorkSpace(String email, WorkSpaceRequestDto requestDto, Long workspaceId) {
+        validatePermission(email, workspaceId);
         WorkSpace workSpace = workSpaceRepository.findByUserEmailAndIdOrElseThrow(email, workspaceId);
-
         WorkSpace updatedWorkSpace = workSpaceRepository.save(workSpace.update(requestDto));
 
         return new WorkSpaceResponseDto(
@@ -56,4 +57,17 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
                 updatedWorkSpace.getDescription()
         );
     }
+
+    @Override
+    public void deleteWorkSpace(String email, Long workspaceId) {
+        validatePermission(email, workspaceId);
+        workSpaceRepository.deleteById(workspaceId);
+    }
+
+    private void validatePermission(String email, Long workspaceId) {
+        if (!workSpaceRepository.isUserWorkSpaceOwner(email, workspaceId)) {
+            throw new WorkSpaceAccessDeniedException("워크 스페이스 수정 권한이 없습니다.");
+        }
+    }
+
 }

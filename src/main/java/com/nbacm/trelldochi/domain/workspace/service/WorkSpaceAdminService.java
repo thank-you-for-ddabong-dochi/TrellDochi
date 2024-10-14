@@ -7,4 +7,6 @@ public interface WorkSpaceAdminService {
     WorkSpaceResponseDto createWorkSpace(String email, WorkSpaceRequestDto requestDto);
 
     WorkSpaceResponseDto updateWorkSpace(String email, WorkSpaceRequestDto requestDto, Long workspaceId);
+
+    void deleteWorkSpace(String email, Long workspaceId);
 }

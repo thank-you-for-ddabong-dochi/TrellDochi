@@ -38,4 +38,17 @@ public class WorkSpaceAdminController {
                         workSpaceService.updateWorkSpace(authUser.getEmail(), requestDto, workspaceId)
                 ));
     }
+
+    @DeleteMapping("/{workspaceId}")
+    public ResponseEntity<ApiResponse<Long>> deleteWorkSpace(
+            @AuthenticationPrincipal AuthUser authUser,
+            WorkSpaceRequestDto requestDto,
+            @PathVariable Long workspaceId
+    ) {
+        workSpaceService.deleteWorkSpace(authUser.getEmail(), workspaceId);
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "워크 스페이스 삭제 성공"
+                ));
+    }
 }
