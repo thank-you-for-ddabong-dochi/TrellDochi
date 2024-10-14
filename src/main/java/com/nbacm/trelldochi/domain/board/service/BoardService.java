@@ -4,23 +4,15 @@ import com.nbacm.trelldochi.domain.board.dto.BoardRequestDto;
 import com.nbacm.trelldochi.domain.board.dto.BoardResponseDto;
 import com.nbacm.trelldochi.domain.board.entity.Board;
 import com.nbacm.trelldochi.domain.board.repository.BoardRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
-public class BoardService {
+import java.util.List;
 
-    private final BoardRepository boardRepository;
+public interface BoardService {
 
-    // 보드 생성
-    public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, Long workspace_id) {
-        Board board = new Board(boardRequestDto.getTitle(), boardRequestDto.getContents());
-        boardRepository.save(board);
+    BoardResponseDto createBoard(Long workspaceId, BoardRequestDto boardRequestDto);
+    List<BoardResponseDto> getAllBoard(Long workspaceId);
+    BoardResponseDto getBoard(Long workspaceId, Long boardId);
+    BoardResponseDto updateBoard(Long workspaceId, Long boardId, BoardRequestDto boardRequestDto);
+    BoardResponseDto deleteBoard(Long boardId);
 
-        return new BoardResponseDto(board);
-    }
-
-
-    public
 }

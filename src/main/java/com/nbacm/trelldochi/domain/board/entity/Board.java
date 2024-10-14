@@ -1,5 +1,6 @@
 package com.nbacm.trelldochi.domain.board.entity;
 
+import com.nbacm.trelldochi.domain.board.dto.BoardRequestDto;
 import com.nbacm.trelldochi.domain.list.entity.TodoList;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpace;
 import jakarta.persistence.*;
@@ -31,8 +32,17 @@ public class Board {
     @JoinColumn(name = "workspace_id")
     private WorkSpace workSpace;
 
-    public Board(String title, String contents) {
+    public Board(String title, String contents, List<TodoList> todoLists, WorkSpace workSpace) {
         this.title = title;
         this.contents = contents;
+        this.todoLists = todoLists;
+        this.workSpace = workSpace;
+    }
+
+    public void update(BoardRequestDto boardRequestDto) {
+        this.title = boardRequestDto.getTitle();
+        this.contents = boardRequestDto.getContents();
+        this.todoLists = boardRequestDto.getTodoList();
+        this.workSpace = boardRequestDto.getWorkSpace();
     }
 }

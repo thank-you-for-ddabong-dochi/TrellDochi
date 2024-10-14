@@ -1,15 +1,24 @@
 package com.nbacm.trelldochi.domain.board.dto;
 
+import com.nbacm.trelldochi.domain.card.entity.Card;
+import com.nbacm.trelldochi.domain.list.entity.TodoList;
+import com.nbacm.trelldochi.domain.workspace.entity.WorkSpace;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 public class BoardRequestDto {
 
     private String title;
     private String contents;
+    private List<TodoList> todoLists;
+    private WorkSpace workSpace;
 
-    public BoardRequestDto(String title, String contents) {
+    public BoardRequestDto(String title, String contents, List<TodoList> todoLists, WorkSpace workSpace) {
         this.title = title;
         this.contents = contents;
+        this.todoLists = todoLists;
+        this.workSpace = workSpace;
     }
 }

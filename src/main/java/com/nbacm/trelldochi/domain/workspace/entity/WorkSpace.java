@@ -16,7 +16,7 @@ public class WorkSpace {
     private Long id;
     private String description;
 
-    @OneToMany(mappedBy = "workSpace", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkSpaceMember> members;
 
     @OneToMany(mappedBy = "board")
