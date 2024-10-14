@@ -15,5 +15,5 @@ public class CardController {
 
     private final CardService cardService;
 
-  
+
 }

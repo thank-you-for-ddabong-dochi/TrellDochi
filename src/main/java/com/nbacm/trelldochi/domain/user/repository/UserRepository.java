@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
+    Optional<User> findByUsername(String username);
+
     default User findByEmailOrElseThrow(String email) {
         return findByEmail(email).orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다"));
     }

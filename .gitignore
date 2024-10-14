@@ -38,3 +38,16 @@ out/
 
 ### yml ###
 application.yml
+
+
+{
+  "status":"success",
+
+  "data":{  "email":"owner@naver.com",
+            "name":"arin",
+            "phone":"010-4321-4321",
+            "role":"사장님"},
+
+
+  "message":null
+}
