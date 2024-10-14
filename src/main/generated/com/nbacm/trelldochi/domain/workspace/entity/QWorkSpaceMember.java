@@ -28,7 +28,7 @@ public class QWorkSpaceMember extends EntityPathBase<WorkSpaceMember> {
 
     public final com.nbacm.trelldochi.domain.user.entity.QUser user;
 
-    public final QWorkSpace workSpace;
+    public final QWorkSpace workspace;
 
     public QWorkSpaceMember(String variable) {
         this(WorkSpaceMember.class, forVariable(variable), INITS);
@@ -49,7 +49,7 @@ public class QWorkSpaceMember extends EntityPathBase<WorkSpaceMember> {
     public QWorkSpaceMember(Class<? extends WorkSpaceMember> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.user = inits.isInitialized("user") ? new com.nbacm.trelldochi.domain.user.entity.QUser(forProperty("user")) : null;
-        this.workSpace = inits.isInitialized("workSpace") ? new QWorkSpace(forProperty("workSpace")) : null;
+        this.workspace = inits.isInitialized("workspace") ? new QWorkSpace(forProperty("workspace")) : null;
     }
 
 }

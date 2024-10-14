@@ -18,6 +18,8 @@ public class QCard extends EntityPathBase<Card> {
 
     private static final long serialVersionUID = 134447727L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QCard card = new QCard("card");
 
     public final ListPath<com.nbacm.trelldochi.domain.attachment.entity.Attachment, com.nbacm.trelldochi.domain.attachment.entity.QAttachment> attachmentList = this.<com.nbacm.trelldochi.domain.attachment.entity.Attachment, com.nbacm.trelldochi.domain.attachment.entity.QAttachment>createList("attachmentList", com.nbacm.trelldochi.domain.attachment.entity.Attachment.class, com.nbacm.trelldochi.domain.attachment.entity.QAttachment.class, PathInits.DIRECT2);
@@ -38,16 +40,27 @@ public class QCard extends EntityPathBase<Card> {
 
     public final StringPath title = createString("title");
 
+    public final com.nbacm.trelldochi.domain.list.entity.QTodoList todolist;
+
     public QCard(String variable) {
-        super(Card.class, forVariable(variable));
+        this(Card.class, forVariable(variable), INITS);
     }
 
     public QCard(Path<? extends Card> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QCard(PathMetadata metadata) {
-        super(Card.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QCard(PathMetadata metadata, PathInits inits) {
+        this(Card.class, metadata, inits);
+    }
+
+    public QCard(Class<? extends Card> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.todolist = inits.isInitialized("todolist") ? new com.nbacm.trelldochi.domain.list.entity.QTodoList(forProperty("todolist"), inits.get("todolist")) : null;
     }
 
 }

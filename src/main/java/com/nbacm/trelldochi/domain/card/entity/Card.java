@@ -4,6 +4,7 @@ import com.nbacm.trelldochi.domain.attachment.entity.Attachment;
 import com.nbacm.trelldochi.domain.card.dto.CardPatchRequestDto;
 import com.nbacm.trelldochi.domain.card.dto.CardRequestDto;
 import com.nbacm.trelldochi.domain.comment.entity.Comment;
+import com.nbacm.trelldochi.domain.list.entity.TodoList;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,6 +48,10 @@ public class Card {
 
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<CardManager> managerList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "todolist_id")
+    private TodoList todolist;
 
     public Card(CardRequestDto cardRequestDto) {
         this.title = cardRequestDto.getTitle();
