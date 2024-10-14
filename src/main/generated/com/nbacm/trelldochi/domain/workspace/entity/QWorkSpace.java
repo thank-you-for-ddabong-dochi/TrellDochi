@@ -28,6 +28,8 @@ public class QWorkSpace extends EntityPathBase<WorkSpace> {
 
     public final ListPath<WorkSpaceMember, QWorkSpaceMember> members = this.<WorkSpaceMember, QWorkSpaceMember>createList("members", WorkSpaceMember.class, QWorkSpaceMember.class, PathInits.DIRECT2);
 
+    public final StringPath name = createString("name");
+
     public QWorkSpace(String variable) {
         super(WorkSpace.class, forVariable(variable));
     }

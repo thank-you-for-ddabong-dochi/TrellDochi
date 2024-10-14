@@ -2,8 +2,12 @@ package com.nbacm.trelldochi.domain.workspace.entity;
 
 import jakarta.persistence.*;
 import com.nbacm.trelldochi.domain.user.entity.User;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor
 public class WorkSpaceMember {
 
     @Id
@@ -21,4 +25,9 @@ public class WorkSpaceMember {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
+    public WorkSpaceMember(User user, WorkSpace workSpace) {
+        this.user = user;
+        this.workSpace = workSpace;
+        user.getWorkSpaceMembers().add(this);
+    }
 }
