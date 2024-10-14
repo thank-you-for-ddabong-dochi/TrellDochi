@@ -26,7 +26,7 @@ public class QTodoList extends EntityPathBase<TodoList> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Long> order = createNumber("order", Long.class);
+    public final NumberPath<Long> listOrder = createNumber("listOrder", Long.class);
 
     public final StringPath title = createString("title");
 

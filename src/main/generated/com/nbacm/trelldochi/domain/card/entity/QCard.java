@@ -32,7 +32,7 @@ public class QCard extends EntityPathBase<Card> {
 
     public final ListPath<CardManager, QCardManager> managerList = this.<CardManager, QCardManager>createList("managerList", CardManager.class, QCardManager.class, PathInits.DIRECT2);
 
-    public final StringPath status = createString("status");
+    public final EnumPath<CardStatus> status = createEnum("status", CardStatus.class);
 
     public final StringPath title = createString("title");
 

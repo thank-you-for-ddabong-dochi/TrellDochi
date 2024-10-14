@@ -3,10 +3,12 @@ package com.nbacm.trelldochi.domain.attachment.entity;
 import com.nbacm.trelldochi.domain.card.entity.Card;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "attachment")
+@NoArgsConstructor
 public class Attachment {
 
     @Id
