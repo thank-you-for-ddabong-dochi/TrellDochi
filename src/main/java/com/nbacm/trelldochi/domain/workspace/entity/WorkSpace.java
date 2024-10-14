@@ -30,7 +30,7 @@ public class WorkSpace {
     public WorkSpace(String name, String description, User user) {
         this.name = name;
         this.description = description;
-        this.members.add(new WorkSpaceMember(user, this));
+        this.members.add(new WorkSpaceMember(user, this, MemberRole.OWNER));
     }
 
     public WorkSpace update(WorkSpaceRequestDto requestDto) {

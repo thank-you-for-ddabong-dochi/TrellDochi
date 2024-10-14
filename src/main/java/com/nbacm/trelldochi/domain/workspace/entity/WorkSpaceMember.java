@@ -25,9 +25,10 @@ public class WorkSpaceMember {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
-    public WorkSpaceMember(User user, WorkSpace workSpace) {
+    public WorkSpaceMember(User user, WorkSpace workSpace, MemberRole role) {
         this.user = user;
         this.workSpace = workSpace;
+        this.role = role;
         user.getWorkSpaceMembers().add(this);
     }
 }

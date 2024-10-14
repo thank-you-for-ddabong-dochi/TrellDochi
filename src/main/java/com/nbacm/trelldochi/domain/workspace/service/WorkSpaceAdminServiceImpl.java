@@ -8,6 +8,7 @@ import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceRequestDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceResponseDto;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpace;
 import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceAccessDeniedException;
+import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceMemberRepository;
 import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
 
     private final UserRepository userRepository;
     private final WorkSpaceRepository workSpaceRepository;
+    private final WorkSpaceMemberRepository workSpaceMemberRepository;
 
     @Override
     @Transactional
