@@ -59,7 +59,7 @@ public class NotificationService {
             HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
 
             String response = restTemplate.postForObject(webhookUrl, request, String.class);
-            log.info("슬랙 알림이 성공적으로 전송되었습니다. Response: {}", response);
+            log.info("슬랙 알림이 성공적으로 전송 되었습니다. Response: {}", response);
         } catch (Exception e) {
             log.error("Slack 알림 전송 오류: ", e);
         }
