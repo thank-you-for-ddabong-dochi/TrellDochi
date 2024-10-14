@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,9 +21,14 @@ public class WorkSpace {
     private Long id;
     private String name;
     private String description;
+    private boolean isDeleted;
 
-    @OneToMany(mappedBy = "workSpace", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WorkSpaceMember> members;
+    @ManyToOne
+    @JoinColumn(name = "workspace")
+    private User owner;
+
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkSpaceMember> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "workSpace", cascade = CascadeType.ALL)
     private List<Board> boards;
@@ -30,7 +36,8 @@ public class WorkSpace {
     public WorkSpace(String name, String description, User user) {
         this.name = name;
         this.description = description;
-        this.members.add(new WorkSpaceMember(user, this, MemberRole.OWNER));
+        this.owner = user;
+        this.members.add(new WorkSpaceMember(user, this, MemberRole.ADMIN));
     }
 
     public WorkSpace update(WorkSpaceRequestDto requestDto) {
@@ -41,5 +48,8 @@ public class WorkSpace {
             this.description = requestDto.getDescription();
         }
         return this;
+    }
+    public void delete(){
+        this.isDeleted = true;
     }
 }

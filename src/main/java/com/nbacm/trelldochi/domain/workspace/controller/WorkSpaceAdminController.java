@@ -2,6 +2,7 @@ package com.nbacm.trelldochi.domain.workspace.controller;
 
 import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
 import com.nbacm.trelldochi.domain.common.dto.AuthUser;
+import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceMemberResponseDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceRequestDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceResponseDto;
 import com.nbacm.trelldochi.domain.workspace.service.WorkSpaceAdminServiceImpl;
@@ -15,14 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/admin/workspaces")
 public class WorkSpaceAdminController {
 
-    private final WorkSpaceAdminServiceImpl workSpaceService;
+    private final WorkSpaceAdminServiceImpl workSpaceAdminService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<WorkSpaceResponseDto>> createWorkSpace(@AuthenticationPrincipal AuthUser authUser, WorkSpaceRequestDto requestDto) {
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "워크 스페이스 생성 성공",
-                        workSpaceService.createWorkSpace(authUser.getEmail(), requestDto)
+                        workSpaceAdminService.createWorkSpace(authUser.getEmail(), requestDto)
                 ));
     }
 
@@ -35,7 +36,7 @@ public class WorkSpaceAdminController {
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "워크 스페이스 수정 성공",
-                        workSpaceService.updateWorkSpace(authUser.getEmail(), requestDto, workspaceId)
+                        workSpaceAdminService.updateWorkSpace(authUser.getEmail(), requestDto, workspaceId)
                 ));
     }
 
@@ -45,10 +46,40 @@ public class WorkSpaceAdminController {
             WorkSpaceRequestDto requestDto,
             @PathVariable Long workspaceId
     ) {
-        workSpaceService.deleteWorkSpace(authUser.getEmail(), workspaceId);
+        workSpaceAdminService.deleteWorkSpace(authUser.getEmail(), workspaceId);
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "워크 스페이스 삭제 성공"
                 ));
     }
+
+    @PutMapping("/{workspaceId}/members/{memberId}")
+    public ResponseEntity<ApiResponse<WorkSpaceMemberResponseDto>> changeMemberRole(
+            @AuthenticationPrincipal AuthUser authUser,
+            @PathVariable Long workspaceId,
+            @PathVariable Long memberId,
+            @RequestParam String role
+    ){
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "멤버 수정 성공",
+                        workSpaceAdminService.changeMemberRole(authUser.getEmail() ,workspaceId,memberId,role)
+                )
+        );
+    }
+
+    @PatchMapping("/{workspaceId}/members/{memberId}")
+    public ResponseEntity<ApiResponse<?>> deleteMember(
+            @AuthenticationPrincipal AuthUser authUser,
+            @PathVariable Long workspaceId,
+            @PathVariable Long memberId
+    ){
+        workSpaceAdminService.deleteMember(authUser.getEmail(), workspaceId,memberId);
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "멤버 삭제 성공"
+                )
+        );
+    }
+
 }

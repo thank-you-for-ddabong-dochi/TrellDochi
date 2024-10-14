@@ -3,6 +3,7 @@ package com.nbacm.trelldochi.domain.workspace.service;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import com.nbacm.trelldochi.domain.user.repository.UserRepository;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceResponseDto;
+import com.nbacm.trelldochi.domain.invitation.repository.InvitationRepository;
 import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceMemberRepository;
 import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
     private final UserRepository userRepository;
     private final WorkSpaceRepository workSpaceRepository;
     private final WorkSpaceMemberRepository workSpaceMemberRepository;
+    private final InvitationRepository workSpaceInvitationRepository;
 
     @Override
     public Page<WorkSpaceResponseDto> getWorkSpaces(String email, int page, int size) {

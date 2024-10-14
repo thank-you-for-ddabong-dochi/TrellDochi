@@ -3,10 +3,10 @@ package com.nbacm.trelldochi.domain.user.entity;
 import com.nbacm.trelldochi.domain.card.entity.CardManager;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpaceMember;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -36,7 +36,7 @@ public class User {
     private UserRole userRole;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<WorkSpaceMember> workSpaceMembers;
+    private List<WorkSpaceMember> workSpaceMembers = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<CardManager> cardManagers;

@@ -4,10 +4,14 @@ import com.nbacm.trelldochi.domain.common.exception.ForbiddenException;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import com.nbacm.trelldochi.domain.user.entity.UserRole;
 import com.nbacm.trelldochi.domain.user.repository.UserRepository;
+import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceMemberResponseDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceRequestDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceResponseDto;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpace;
+import com.nbacm.trelldochi.domain.workspace.entity.WorkSpaceMember;
+import com.nbacm.trelldochi.domain.workspace.entity.MemberRole;
 import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceAccessDeniedException;
+import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceNotFoundException;
 import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceMemberRepository;
 import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,13 +67,43 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     @Override
     public void deleteWorkSpace(String email, Long workspaceId) {
         validatePermission(email, workspaceId);
-        workSpaceRepository.deleteById(workspaceId);
+        WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(
+                () -> new WorkSpaceNotFoundException("워크 스페이스가 없습니다.")
+        );
+        workSpace.delete();
+    }
+
+    @Override
+    @Transactional
+    public WorkSpaceMemberResponseDto changeMemberRole(String email, Long workspaceId, Long memberId, String role) {
+        validatePermission(email,workspaceId);
+        WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(memberId, workspaceId).orElseThrow(
+                () -> new WorkSpaceNotFoundException("워크 스페이스가 존재하지 않습니다.")
+        );
+        workSpaceMember.changeRole(role);
+        WorkSpaceMember savedWorkSpaceMember = workSpaceMemberRepository.save(workSpaceMember);
+
+        return new WorkSpaceMemberResponseDto(workSpaceMember);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMember(String email, Long workspaceId, Long memberId) {
+        validatePermission(email,workspaceId);
+        WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(memberId, workspaceId).orElseThrow(
+                () -> new WorkSpaceNotFoundException("워크 스페이스가 존재하지 않습니다.")
+        );
+        workSpaceMember.delete();
+        workSpaceMemberRepository.save(workSpaceMember);
     }
 
     private void validatePermission(String email, Long workspaceId) {
-        if (!workSpaceRepository.isUserWorkSpaceOwner(email, workspaceId)) {
-            throw new WorkSpaceAccessDeniedException("워크 스페이스 수정 권한이 없습니다.");
+        User user = userRepository.findByEmailOrElseThrow(email);
+        WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(user.getId(), workspaceId).orElseThrow(
+                () -> new WorkSpaceNotFoundException("워크 스페이스가 존재하지 않습니다.")
+        );
+        if (!workSpaceMember.getRole().equals(MemberRole.ADMIN)) {
+            throw new WorkSpaceAccessDeniedException("워크 스페이스 ADMIN 권한이 없습니다.");
         }
     }
-
 }
