@@ -26,7 +26,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath isDelete = createString("isDelete");
+    public final BooleanPath isDelete = createBoolean("isDelete");
 
     public final StringPath nickname = createString("nickname");
 

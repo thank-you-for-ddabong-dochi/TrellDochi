@@ -14,11 +14,19 @@ public class ApiResponse <T>{
         this.data = data;
     }
 
-
+    public ApiResponse(String message) {
+        this.status = "success";
+        this.message = message;
+    }
 
     // 성공 응답을 쉽게 만들기 위한 static 메서드
     public static <T> ApiResponse<T> success(String message, T data) {
         return new ApiResponse<>(message, data);
+    }
+
+    // 성공 응답을 쉽게 만들기 위한 static 메서드
+    public static <T> ApiResponse<T> success(String message) {
+        return new ApiResponse<>(message);
     }
 
 

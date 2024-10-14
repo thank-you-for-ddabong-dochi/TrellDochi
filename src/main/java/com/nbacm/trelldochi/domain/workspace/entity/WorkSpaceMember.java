@@ -19,6 +19,6 @@ public class WorkSpaceMember {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private String role;
+    private MemberRole role;
 
 }

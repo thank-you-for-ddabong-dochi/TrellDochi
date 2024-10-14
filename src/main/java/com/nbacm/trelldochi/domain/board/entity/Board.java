@@ -28,7 +28,7 @@ public class Board {
     @OneToMany(mappedBy = "board")
     private List<TodoList> todoLists;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private WorkSpace workSpace;
 
