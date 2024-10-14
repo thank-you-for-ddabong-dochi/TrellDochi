@@ -1,6 +1,4 @@
 package com.nbacm.trelldochi.domain.user.repository;
-
-import com.nbacm.trelldochi.domain.common.exception.NotFoundException;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import com.nbacm.trelldochi.domain.user.exception.UserNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -3,7 +3,6 @@ package com.nbacm.trelldochi.domain.user.entity;
 import com.nbacm.trelldochi.domain.card.entity.CardManager;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpaceMember;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
