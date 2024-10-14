@@ -50,7 +50,7 @@ public class QBoard extends EntityPathBase<Board> {
 
     public QBoard(Class<? extends Board> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.workSpace = inits.isInitialized("workSpace") ? new com.nbacm.trelldochi.domain.workspace.entity.QWorkSpace(forProperty("workSpace")) : null;
+        this.workSpace = inits.isInitialized("workSpace") ? new com.nbacm.trelldochi.domain.workspace.entity.QWorkSpace(forProperty("workSpace"), inits.get("workSpace")) : null;
     }
 
 }
