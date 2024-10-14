@@ -13,12 +13,12 @@ public class BoardRequestDto {
     private String title;
     private String contents;
     private List<TodoList> todoLists;
-    private WorkSpace workSpace;
+    private Long workSpaceId;
 
-    public BoardRequestDto(String title, String contents, List<TodoList> todoLists, WorkSpace workSpace) {
+    public BoardRequestDto(String title, String contents, List<TodoList> todoLists, Long workSpaceId) {
         this.title = title;
         this.contents = contents;
         this.todoLists = todoLists;
-        this.workSpace = workSpace;
+        this.workSpaceId = workSpaceId;
     }
 }

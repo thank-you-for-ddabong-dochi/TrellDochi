@@ -24,6 +24,8 @@ public class QTodoList extends EntityPathBase<TodoList> {
 
     public final com.nbacm.trelldochi.domain.board.entity.QBoard board;
 
+    public final ListPath<com.nbacm.trelldochi.domain.card.entity.Card, com.nbacm.trelldochi.domain.card.entity.QCard> cardList = this.<com.nbacm.trelldochi.domain.card.entity.Card, com.nbacm.trelldochi.domain.card.entity.QCard>createList("cardList", com.nbacm.trelldochi.domain.card.entity.Card.class, com.nbacm.trelldochi.domain.card.entity.QCard.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final NumberPath<Long> listOrder = createNumber("listOrder", Long.class);

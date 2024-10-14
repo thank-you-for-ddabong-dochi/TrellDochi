@@ -42,7 +42,6 @@ public class Board {
     public void update(BoardRequestDto boardRequestDto) {
         this.title = boardRequestDto.getTitle();
         this.contents = boardRequestDto.getContents();
-        this.todoLists = boardRequestDto.getTodoList();
-        this.workSpace = boardRequestDto.getWorkSpace();
+        this.todoLists = boardRequestDto.getTodoLists();
     }
 }

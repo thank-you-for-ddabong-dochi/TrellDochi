@@ -13,6 +13,6 @@ public interface BoardService {
     List<BoardResponseDto> getAllBoard(Long workspaceId);
     BoardResponseDto getBoard(Long workspaceId, Long boardId);
     BoardResponseDto updateBoard(Long workspaceId, Long boardId, BoardRequestDto boardRequestDto);
-    BoardResponseDto deleteBoard(Long boardId);
+    BoardResponseDto deleteBoard(Long workspaceId, Long boardId);
 
 }
