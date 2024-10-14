@@ -35,10 +35,9 @@ public class Board {
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
-    public Board(String title, String contents, List<TodoList> todoLists, WorkSpace workSpace) {
+    public Board(String title, String contents, WorkSpace workSpace) {
         this.title = title;
         this.contents = contents;
-        this.todoLists = todoLists;
         this.workSpace = workSpace;
     }
 
@@ -46,6 +45,10 @@ public class Board {
         this.title = boardRequestDto.getTitle();
         this.contents = boardRequestDto.getContents();
         this.todoLists = boardRequestDto.getTodoLists();
+    }
+
+    public void addList(TodoList todoList) {
+        this.todoLists.add(todoList);
     }
 
     public void delete() {

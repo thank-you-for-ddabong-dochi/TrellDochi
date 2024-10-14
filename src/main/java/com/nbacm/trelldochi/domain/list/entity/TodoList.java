@@ -19,7 +19,7 @@ public class TodoList {
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
-    private Long listOrder;
+    private int listOrder;
 
     @OneToMany(mappedBy = "todolist")
     private List<Card> cardList;
@@ -31,16 +31,24 @@ public class TodoList {
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
-    public TodoList(TodoListRequestDto todoListRequestDto) {
-        this.title = todoListRequestDto.getTitle();
-        this.listOrder = todoListRequestDto.getListOrder();
-        this.cardList = todoListRequestDto.getCardList();
+    public TodoList(String title, int listOrder, Board board) {
+        this.title = title;
+        this.listOrder = listOrder;
+        this.board = board;
     }
 
     public void update(TodoListRequestDto todoListRequestDto) {
         this.title = todoListRequestDto.getTitle();
         this.listOrder = todoListRequestDto.getListOrder();
         this.cardList = todoListRequestDto.getCardList();
+    }
+
+    public void addCard(Card card) {
+        this.cardList.add(card);
+    }
+
+    public void move(int order) {
+        this.listOrder = order;
     }
 
     public void delete() {

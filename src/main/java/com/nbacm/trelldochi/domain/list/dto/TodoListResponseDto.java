@@ -10,7 +10,7 @@ import java.util.List;
 public class TodoListResponseDto {
 
     private String title;
-    private Long listOrder;
+    private int listOrder;
     private List<Card> cardList;
     private Long boardId;
 

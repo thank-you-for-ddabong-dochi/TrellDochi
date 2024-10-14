@@ -3,6 +3,8 @@ package com.nbacm.trelldochi.domain.list.service;
 import com.nbacm.trelldochi.domain.board.entity.Board;
 import com.nbacm.trelldochi.domain.board.repository.BoardRepository;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
+import com.nbacm.trelldochi.domain.common.exception.NotFoundException;
+import com.nbacm.trelldochi.domain.list.dto.MoveListRequestDto;
 import com.nbacm.trelldochi.domain.list.dto.TodoListRequestDto;
 import com.nbacm.trelldochi.domain.list.dto.TodoListResponseDto;
 import com.nbacm.trelldochi.domain.list.entity.TodoList;
@@ -17,8 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,29 +40,36 @@ public class TodoServiceImpl implements TodoListService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        TodoList todoList = new TodoList(todoListRequestDto);
+        // 해당 리스트가 보드에 속해있는 것이 맞는지에 대해 판단이 요구됨
+
+        TodoList todoList = new TodoList(todoListRequestDto.getTitle(), todoListRequestDto.getListOrder(), board);
 
         TodoList savedTodoList = todoRepository.save(todoList);
 
         return new TodoListResponseDto(savedTodoList);
     }
 
-    /*@Override
-    public List<TodoListResponseDto> getAllTodoList(Long boardId) {
+    @Override
+    @Transactional
+    public void moveTodoList(MoveListRequestDto moveListRequestDto) {
 
-        List<TodoList> todoLists = todoRepository.findByBoardId(boardId);
+        TodoList todoList = todoRepository.findById(moveListRequestDto.getTodoListId()).orElseThrow();
+        int currentOrder = todoList.getListOrder();
+        int targetOrder = moveListRequestDto.getTargetOrder();
 
-        return todoLists.stream().map(TodoListResponseDto::new).toList();
+        // 리스트를 뒤쪽으로 이동시킬 때
+        if(currentOrder < targetOrder) {
+            todoRepository.decrementOrderBetween(currentOrder+1, targetOrder);
+        }
+        // 리스트를 앞쪽으로 이동시킬 때
+        else if(currentOrder > targetOrder) {
+            todoRepository.incrementOrderBetween(targetOrder, currentOrder-1);
+        }
 
+        todoList.move(targetOrder);
+        todoRepository.save(todoList);
     }
 
-    @Override
-    public TodoListResponseDto getTodoList(Long boardId, Long listId) {
-
-        TodoList todoList = todoRepository.findById(listId).orElse(null);
-
-        return new TodoListResponseDto(todoList);
-    }*/
 
     @Override
     @Transactional
@@ -86,12 +93,13 @@ public class TodoServiceImpl implements TodoListService {
     public TodoListResponseDto deleteTodoList(Long boardId, Long listId, CustomUserDetails userDetails) {
 
         // 현재 로그인 중인 유저가 해당 워크스페이스의 맴버인지 판단이 필요함
-        Board board = boardRepository.findById(boardId).orElseThrow();
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(""));
 
         if(!isAuthorized(board.getWorkSpace().getId(), userDetails)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        TodoList todoList = todoRepository.findById(listId).orElse(null);
+
+        TodoList todoList = todoRepository.findById(listId).orElseThrow(() -> new NotFoundException(""));
 
         todoList.delete();
 

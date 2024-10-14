@@ -2,6 +2,7 @@ package com.nbacm.trelldochi.domain.list.controller;
 
 import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
+import com.nbacm.trelldochi.domain.list.dto.MoveListRequestDto;
 import com.nbacm.trelldochi.domain.list.dto.TodoListRequestDto;
 import com.nbacm.trelldochi.domain.list.dto.TodoListResponseDto;
 import com.nbacm.trelldochi.domain.list.entity.TodoList;
@@ -37,6 +38,15 @@ public class TodoListController {
         TodoListResponseDto todoListResponseDto = todoListService.updateTodoList(boardId, todoListId, todoListRequestDto, userDetails);
 
         return ResponseEntity.ok(ApiResponse.success("리스트 수정 성공", todoListResponseDto));
+    }
+
+    @PatchMapping("boards/{boardId}")
+    public ResponseEntity<?> moveList(@PathVariable Long boardId,
+                                      @RequestBody MoveListRequestDto moveListRequestDto) {
+
+        todoListService.moveTodoList(moveListRequestDto);
+
+        return ResponseEntity.ok(ApiResponse.success("리스트 순서 변경 성공", ""));
     }
 
     @DeleteMapping("boards/{boardId}/todoList/{todoListId}")
