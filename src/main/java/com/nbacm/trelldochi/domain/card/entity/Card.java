@@ -5,6 +5,7 @@ import com.nbacm.trelldochi.domain.card.dto.CardRequestDto;
 import com.nbacm.trelldochi.domain.comment.entity.Comment;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "card")
+@NoArgsConstructor
 public class Card {
 
     @Id
@@ -32,14 +34,16 @@ public class Card {
     @Enumerated(EnumType.STRING)
     private CardStatus status;
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "attachment", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Attachment> attachmentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
-    private List<CardManager> managerList;
+    private List<CardManager> managerList = new ArrayList<>();
 
     public Card(CardRequestDto cardRequestDto) {
         this.title = cardRequestDto.getTitle();

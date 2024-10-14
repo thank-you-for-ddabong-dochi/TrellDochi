@@ -29,7 +29,7 @@ public class User {
     private String nickname;
 
     @Column(nullable = false)
-    private String isDelete;
+    private Boolean isDelete = false;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -41,6 +41,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<CardManager> cardManagers;
 
+
     public User(String email,UserRole userRole) {
         this.email = email;
         this.userRole = userRole;
@@ -51,6 +52,9 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.userRole = userRole;
+    }
+    public void deleteAccount(){
+        this.isDelete = true;
     }
 
 }
