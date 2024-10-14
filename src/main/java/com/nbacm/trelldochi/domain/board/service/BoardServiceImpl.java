@@ -15,6 +15,7 @@ import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -30,17 +31,10 @@ public class BoardServiceImpl implements BoardService {
 
 
     @Override
+    @Transactional
     public BoardResponseDto createBoard(Long workspaceId, BoardRequestDto boardRequestDto, CustomUserDetails userDetails) {
 
-        User user = userRepository.findByEmailOrElseThrow(userDetails.getEmail());
-
-        // 현재 로그인 중인 유저가 해당 워크스페이스의 맴버인지 판단이 필요함
-        WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(workspaceId, user.getId()).orElseThrow();
-        if(workSpaceMemberRepository.findByUserIdAndWorkspaceId(workspaceId, user.getId()).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
-        // 또한 맴버라면 해당 권한이 READONLY 가 아닌지 판단이 필요함
-        if(workSpaceMember.getRole() == MemberRole.READONLY) {
+        if(!isAuthorized(workspaceId, userDetails)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
@@ -72,17 +66,10 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public BoardResponseDto updateBoard(Long workspaceId, Long boardId, BoardRequestDto boardRequestDto, CustomUserDetails userDetails) {
 
-        User user = userRepository.findByEmailOrElseThrow(userDetails.getEmail());
-
-        // 현재 로그인 중인 유저가 해당 워크스페이스의 맴버인지 판단이 필요함
-        WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(workspaceId, user.getId()).orElseThrow();
-        if(workSpaceMemberRepository.findByUserIdAndWorkspaceId(workspaceId, user.getId()).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
-        // 또한 맴버라면 해당 권한이 READONLY 가 아닌지 판단이 필요함
-        if(workSpaceMember.getRole() == MemberRole.READONLY) {
+        if(!isAuthorized(workspaceId, userDetails)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
@@ -93,22 +80,15 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public BoardResponseDto deleteBoard(Long workspaceId, Long boardId, CustomUserDetails userDetails) {
 
-        User user = userRepository.findByEmailOrElseThrow(userDetails.getEmail());
-
-        // 현재 로그인 중인 유저가 해당 워크스페이스의 맴버인지 판단이 필요함
-        WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(workspaceId, user.getId()).orElseThrow();
-        if(workSpaceMemberRepository.findByUserIdAndWorkspaceId(workspaceId, user.getId()).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
-        // 또한 맴버라면 해당 권한이 READONLY 가 아닌지 판단이 필요함
-        if(workSpaceMember.getRole() == MemberRole.READONLY) {
+        if(!isAuthorized(workspaceId, userDetails)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
         Board board = boardRepository.findById(boardId).orElseThrow();
-        boardRepository.delete(board);
+        board.delete();
 
         return new BoardResponseDto(board);
     }

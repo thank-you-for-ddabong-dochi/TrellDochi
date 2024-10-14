@@ -15,6 +15,7 @@ import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceMemberRepositor
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class TodoServiceImpl implements TodoListService {
     private final WorkSpaceMemberRepository workSpaceMemberRepository;
 
     @Override
+    @Transactional
     public TodoListResponseDto createTodoList(Long boardId, TodoListRequestDto todoListRequestDto, CustomUserDetails userDetails) {
 
         // 현재 로그인 중인 유저가 해당 워크스페이스의 맴버인지 판단이 필요함
@@ -63,6 +65,7 @@ public class TodoServiceImpl implements TodoListService {
     }*/
 
     @Override
+    @Transactional
     public TodoListResponseDto updateTodoList(Long boardId, Long listId, TodoListRequestDto todoListRequestDto, CustomUserDetails userDetails) {
 
         // 현재 로그인 중인 유저가 해당 워크스페이스의 맴버인지 판단이 필요함
@@ -79,6 +82,7 @@ public class TodoServiceImpl implements TodoListService {
     }
 
     @Override
+    @Transactional
     public TodoListResponseDto deleteTodoList(Long boardId, Long listId, CustomUserDetails userDetails) {
 
         // 현재 로그인 중인 유저가 해당 워크스페이스의 맴버인지 판단이 필요함
@@ -89,10 +93,11 @@ public class TodoServiceImpl implements TodoListService {
         }
         TodoList todoList = todoRepository.findById(listId).orElse(null);
 
-        todoRepository.delete(todoList);
+        todoList.delete();
 
         return new TodoListResponseDto(todoList);
     }
+
 
     private Boolean isAuthorized(Long workspaceId, CustomUserDetails userDetails) {
         User user = userRepository.findByEmailOrElseThrow(userDetails.getEmail());

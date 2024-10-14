@@ -28,6 +28,9 @@ public class TodoList {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
+
     public TodoList(TodoListRequestDto todoListRequestDto) {
         this.title = todoListRequestDto.getTitle();
         this.listOrder = todoListRequestDto.getListOrder();
@@ -38,5 +41,9 @@ public class TodoList {
         this.title = todoListRequestDto.getTitle();
         this.listOrder = todoListRequestDto.getListOrder();
         this.cardList = todoListRequestDto.getCardList();
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 }

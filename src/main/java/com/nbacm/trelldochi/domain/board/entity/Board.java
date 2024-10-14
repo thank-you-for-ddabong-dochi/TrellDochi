@@ -32,6 +32,9 @@ public class Board {
     @JoinColumn(name = "workspace_id")
     private WorkSpace workSpace;
 
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
+
     public Board(String title, String contents, List<TodoList> todoLists, WorkSpace workSpace) {
         this.title = title;
         this.contents = contents;
@@ -43,5 +46,9 @@ public class Board {
         this.title = boardRequestDto.getTitle();
         this.contents = boardRequestDto.getContents();
         this.todoLists = boardRequestDto.getTodoLists();
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 }
