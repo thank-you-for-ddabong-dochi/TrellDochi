@@ -1,12 +1,14 @@
 package com.nbacm.trelldochi.domain.list.controller;
 
 import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
+import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.list.dto.TodoListRequestDto;
 import com.nbacm.trelldochi.domain.list.dto.TodoListResponseDto;
 import com.nbacm.trelldochi.domain.list.entity.TodoList;
 import com.nbacm.trelldochi.domain.list.service.TodoListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,9 +20,10 @@ public class TodoListController {
 
     @PostMapping("boards/{boardId}")
     public ResponseEntity<?> createBoard(@PathVariable Long boardId,
-                                         @RequestBody TodoListRequestDto todoListRequestDto) {
+                                         @RequestBody TodoListRequestDto todoListRequestDto,
+                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        TodoListResponseDto todoListResponseDto = todoListService.createTodoList(boardId, todoListRequestDto);
+        TodoListResponseDto todoListResponseDto = todoListService.createTodoList(boardId, todoListRequestDto, userDetails);
 
         return ResponseEntity.ok(ApiResponse.success("리스트 생성 성공", todoListResponseDto));
     }
@@ -28,17 +31,18 @@ public class TodoListController {
     @PutMapping("boards/{boardId}/todoList/{todoListId}")
     public ResponseEntity<?> updateList(@PathVariable Long boardId,
                                         @PathVariable Long todoListId,
-                                        @RequestBody TodoListRequestDto todoListRequestDto) {
+                                        @RequestBody TodoListRequestDto todoListRequestDto,
+                                        @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        TodoListResponseDto todoListResponseDto = todoListService.updateTodoList(boardId, todoListId, todoListRequestDto);
+        TodoListResponseDto todoListResponseDto = todoListService.updateTodoList(boardId, todoListId, todoListRequestDto, userDetails);
 
         return ResponseEntity.ok(ApiResponse.success("리스트 수정 성공", todoListResponseDto));
     }
 
     @DeleteMapping("boards/{boardId}/todoList/{todoListId}")
-    public ResponseEntity<?> deleteList(@PathVariable Long boardId, @PathVariable Long todoListId) {
+    public ResponseEntity<?> deleteList(@PathVariable Long boardId, @PathVariable Long todoListId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        TodoListResponseDto todoListResponseDto = todoListService.deleteTodoList(boardId, todoListId);
+        TodoListResponseDto todoListResponseDto = todoListService.deleteTodoList(boardId, todoListId, userDetails);
 
         return ResponseEntity.ok(ApiResponse.success("리스트 삭제 성공", todoListResponseDto));
     }

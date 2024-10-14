@@ -5,8 +5,10 @@ import com.nbacm.trelldochi.domain.board.dto.BoardResponseDto;
 import com.nbacm.trelldochi.domain.board.entity.Board;
 import com.nbacm.trelldochi.domain.board.service.BoardService;
 import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
+import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,9 +23,10 @@ public class BoardController {
     // 보드 생성
     @PostMapping("/workspace/{workspaceId}")
     public ResponseEntity<?> createBoard(@PathVariable Long workspaceId,
-                                         @RequestBody BoardRequestDto boardRequestDto) {
+                                         @RequestBody BoardRequestDto boardRequestDto,
+                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        BoardResponseDto boardResponseDto = boardService.createBoard(workspaceId, boardRequestDto);
+        BoardResponseDto boardResponseDto = boardService.createBoard(workspaceId, boardRequestDto, userDetails);
 
         return ResponseEntity.ok(ApiResponse.success("보드 생성 성공",boardResponseDto));
     }
@@ -48,17 +51,20 @@ public class BoardController {
     @PutMapping("/workspace/{workspaceId}/boards/{boardId}")
     public ResponseEntity<?> updateBoard(@PathVariable Long workspaceId,
                                          @PathVariable Long boardId,
-                                         @RequestBody BoardRequestDto boardRequestDto) {
+                                         @RequestBody BoardRequestDto boardRequestDto,
+                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        BoardResponseDto boardResponseDto = boardService.updateBoard(workspaceId, boardId, boardRequestDto);
+        BoardResponseDto boardResponseDto = boardService.updateBoard(workspaceId, boardId, boardRequestDto, userDetails);
 
         return ResponseEntity.ok(ApiResponse.success("보드 수정 성공", boardResponseDto));
     }
 
     @DeleteMapping("/workspace/{workspaceId}/boards/{boardId}")
-    public ResponseEntity<?> deleteBoard(@PathVariable Long workspaceId, @PathVariable Long boardId) {
+    public ResponseEntity<?> deleteBoard(@PathVariable Long workspaceId,
+                                         @PathVariable Long boardId,
+                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        BoardResponseDto boardResponseDto = boardService.deleteBoard(workspaceId, boardId);
+        BoardResponseDto boardResponseDto = boardService.deleteBoard(workspaceId, boardId, userDetails);
 
         return ResponseEntity.ok(ApiResponse.success("보드 삭제 성공", boardResponseDto));
     }
