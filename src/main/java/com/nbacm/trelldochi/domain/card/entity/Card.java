@@ -1,6 +1,7 @@
 package com.nbacm.trelldochi.domain.card.entity;
 
 import com.nbacm.trelldochi.domain.attachment.entity.Attachment;
+import com.nbacm.trelldochi.domain.card.dto.CardPatchRequestDto;
 import com.nbacm.trelldochi.domain.card.dto.CardRequestDto;
 import com.nbacm.trelldochi.domain.comment.entity.Comment;
 import jakarta.persistence.*;
@@ -34,8 +35,10 @@ public class Card {
     @Enumerated(EnumType.STRING)
     private CardStatus status;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
 
@@ -50,5 +53,17 @@ public class Card {
         this.explanation = cardRequestDto.getExplanation();
         this.deadline = cardRequestDto.getDeadline();
         this.status = CardStatus.of(cardRequestDto.getStatus());
+    }
+
+    public Card putCard(CardPatchRequestDto cardPatchRequestDto) {
+        title = cardPatchRequestDto.getTitle() == null ? title : cardPatchRequestDto.getTitle();
+        explanation = cardPatchRequestDto.getExplanation() == null ? explanation : cardPatchRequestDto.getExplanation();
+        deadline = cardPatchRequestDto.getDeadline() == null ? deadline : cardPatchRequestDto.getDeadline();
+        status = cardPatchRequestDto.getCardStatus() == null ? status : cardPatchRequestDto.getCardStatus();
+        return this;
+    }
+
+    public void deleteCard() {
+        isDeleted = true;
     }
 }
