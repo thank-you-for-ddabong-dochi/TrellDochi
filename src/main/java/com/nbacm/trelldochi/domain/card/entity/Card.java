@@ -1,6 +1,7 @@
 package com.nbacm.trelldochi.domain.card.entity;
 
 import com.nbacm.trelldochi.domain.attachment.entity.Attachment;
+import com.nbacm.trelldochi.domain.card.dto.CardRequestDto;
 import com.nbacm.trelldochi.domain.comment.entity.Comment;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class Card {
     private LocalDate deadline;
 
     @Enumerated(EnumType.STRING)
-    private String status;
+    private CardStatus status;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
@@ -40,4 +41,10 @@ public class Card {
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<CardManager> managerList;
 
+    public Card(CardRequestDto cardRequestDto) {
+        this.title = cardRequestDto.getTitle();
+        this.explanation = cardRequestDto.getExplanation();
+        this.deadline = cardRequestDto.getDeadline();
+        this.status = CardStatus.of(cardRequestDto.getStatus());
+    }
 }
