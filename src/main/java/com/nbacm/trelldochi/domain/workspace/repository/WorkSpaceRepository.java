@@ -1,6 +1,7 @@
 package com.nbacm.trelldochi.domain.workspace.repository;
 
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpace;
+import com.nbacm.trelldochi.domain.workspace.entity.WorkSpaceMember;
 import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,6 @@ public interface WorkSpaceRepository extends JpaRepository<WorkSpace, Long>, Wor
         return findByUserEmailAndId(email, id).orElseThrow(() -> new WorkSpaceNotFoundException("워크스페이스를 찾을 수 없습니다."));
     }
 
+    @Query("Select wm from WorkSpaceMember wm where wm.workspace.id = :workspaceId and wm.user.email = :email")
+    Optional<WorkSpaceMember> findByUserEmailAndWorkspaceId(String email, Long workspaceId);
 }
