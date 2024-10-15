@@ -19,7 +19,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     @Transactional
-    public void rejectInvitation(String email, Long invitationId) {
+    public void acceptInvitation(String email, Long invitationId) {
         User user = userRepository.findByEmailOrElseThrow(email);
         WorkSpaceInvitation workSpaceInvitation = invitationRepository.findById(invitationId).orElseThrow(
                 () -> new InvitationNotFoundException("초대 만료")
@@ -32,7 +32,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     @Transactional
-    public void acceptInvitation(String email, Long invitationId) {
+    public void rejectInvitation(String email, Long invitationId) {
         User user = userRepository.findByEmailOrElseThrow(email);
         WorkSpaceInvitation workSpaceInvitation = invitationRepository.findById(invitationId).orElseThrow(
                 () -> new InvitationNotFoundException("초대 만료")
