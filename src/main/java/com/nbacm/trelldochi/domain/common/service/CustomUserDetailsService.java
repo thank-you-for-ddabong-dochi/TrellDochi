@@ -18,6 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         User user = userRepository.findByEmailOrElseThrow(email);
 
+
         // User 엔티티를 기반으로 CustomUserDetails 객체 반환
         return new CustomUserDetails(user);
     }
