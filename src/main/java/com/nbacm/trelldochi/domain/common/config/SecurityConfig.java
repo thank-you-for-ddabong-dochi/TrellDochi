@@ -28,7 +28,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/notify/").hasRole("ADMIN")
                         .requestMatchers("/topic/notifications/").permitAll()
                         .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/api/v1/admin/**").hasAuthority(UserRole.ADMIN.name()) // 관리자 권한 필요
+                        .requestMatchers("/api/v1/admin/**").hasRole(UserRole.ADMIN.name()) // 관리자 권한 필요
                         .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
