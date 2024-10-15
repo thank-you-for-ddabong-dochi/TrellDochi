@@ -11,6 +11,7 @@ import com.nbacm.trelldochi.domain.invitation.dto.InvitationResponseDto;
 import com.nbacm.trelldochi.domain.invitation.entity.WorkSpaceInvitation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +21,7 @@ public class InvitationAdminServiceImpl implements InvitationAdminService {
     private final InvitationRepository invatationRepository;
 
     @Override
+    @Transactional
     public InvitationResponseDto inviteMember(String email, Long workspaceId, InvitationRequestDto requestDto) {
         User user = userRepository.findByEmailOrElseThrow(email);
         User receivedUser = userRepository.findByEmailOrElseThrow(requestDto.getEmail());
@@ -34,6 +36,7 @@ public class InvitationAdminServiceImpl implements InvitationAdminService {
     }
 
     @Override
+    @Transactional
     public void cancleInvitation(String email, Long invitationId) {
         User user = userRepository.findByEmailOrElseThrow(email);
         WorkSpaceInvitation workSpaceInvitation = invatationRepository.findById(invitationId).orElseThrow(
