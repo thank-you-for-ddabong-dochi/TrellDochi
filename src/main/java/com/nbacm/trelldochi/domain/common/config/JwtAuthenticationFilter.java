@@ -52,7 +52,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         request.setAttribute("userRole", userRole);
         log.info("userRole:{} ", userRole);
 
-
         // SecurityContextHolder에 인증 정보 저장
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);

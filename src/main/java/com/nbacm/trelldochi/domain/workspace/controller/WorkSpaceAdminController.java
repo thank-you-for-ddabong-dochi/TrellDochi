@@ -2,6 +2,7 @@ package com.nbacm.trelldochi.domain.workspace.controller;
 
 import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
 import com.nbacm.trelldochi.domain.common.dto.AuthUser;
+import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceMemberResponseDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceRequestDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceResponseDto;
