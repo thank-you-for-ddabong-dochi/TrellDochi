@@ -40,7 +40,7 @@ public class InvitationAdminController {
     ) {
         invitationAdminService.cancleInvitation(authUser.getEmail(), invitationId);
         return ResponseEntity.ok(ApiResponse.success(
-                "REJECT SUCCESS"
+                "CANCLE SUCCESS"
         ));
     }
 }
