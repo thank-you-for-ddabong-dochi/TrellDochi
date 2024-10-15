@@ -40,16 +40,10 @@ public class WorkSpaceQueryDslRepositoryImpl implements WorkSpaceQueryDslReposit
                 .on(workSpaceMember.user.id.eq(userId))
                 .fetchOne();
 
-
-
         return new PageImpl<>(
-                workSpaces.stream().map(ws ->
-                new WorkSpaceResponseDto(
-                        ws.getId(),
-                        ws.getName(),
-                        ws.getDescription(),
-                        ws.getBoards()
-                )).toList(),
+                workSpaces.stream()
+                        .map(WorkSpaceResponseDto::new)
+                        .toList(),
                 pageable,
                 count);
     }
