@@ -30,7 +30,7 @@ public class WorkSpaceAdminController {
                 ));
     }
 
-    @PatchMapping("/{workspaceId}")
+    @PutMapping("/{workspaceId}")
     public ResponseEntity<ApiResponse<WorkSpaceResponseDto>> updateWorkSpace(
             @AuthenticationPrincipal CustomUserDetails authUser,
             @RequestBody WorkSpaceRequestDto requestDto,
@@ -43,7 +43,7 @@ public class WorkSpaceAdminController {
                 ));
     }
 
-    @DeleteMapping("/{workspaceId}")
+    @PatchMapping("/{workspaceId}")
     public ResponseEntity<ApiResponse<Long>> deleteWorkSpace(
             @AuthenticationPrincipal CustomUserDetails authUser,
             @RequestBody WorkSpaceRequestDto requestDto,
