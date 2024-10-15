@@ -50,7 +50,7 @@ public class QComment extends EntityPathBase<Comment> {
 
     public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.card = inits.isInitialized("card") ? new com.nbacm.trelldochi.domain.card.entity.QCard(forProperty("card")) : null;
+        this.card = inits.isInitialized("card") ? new com.nbacm.trelldochi.domain.card.entity.QCard(forProperty("card"), inits.get("card")) : null;
     }
 
 }
