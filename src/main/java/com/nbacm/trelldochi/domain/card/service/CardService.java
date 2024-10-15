@@ -34,16 +34,17 @@ public class CardService {
     }
 
     @Transactional
-    public CardResponseDto putCard(Long cardId, CardPatchRequestDto cardPatchRequestDto) {
+    public CardResponseDto putCard(AuthUser authUser, Long cardId, CardPatchRequestDto cardPatchRequestDto) {
         Card findCard = cardRepository.findById(cardId).orElseThrow(CardNotFoundException::new);
         if (findCard.isDeleted()) {
             throw new CardNotFoundException();
         }
+
         return new CardResponseDto(findCard.putCard(cardPatchRequestDto));
     }
 
     @Transactional
-    public void deleteCard(Long cardId) {
+    public void deleteCard(AuthUser authUser, Long cardId) {
         Card findCard = cardRepository.findCardAndCommentsById(cardId).orElseThrow(CardNotFoundException::new);
 
         if (findCard.isDeleted()) {

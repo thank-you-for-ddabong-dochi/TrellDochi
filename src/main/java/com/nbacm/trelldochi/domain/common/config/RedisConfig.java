@@ -10,12 +10,19 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
 public class RedisConfig {
+    @Value("${spring.data.redis.host}")
+    private String redisHost;
+
+    @Value("${spring.data.redis.port}")
+    private int redisPort;
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(); // Lettuce로 변경
+        return new LettuceConnectionFactory(redisHost, redisPort); // Lettuce로 변경
     }
     @Bean
     public MessageListenerAdapter messageListenerAdapter(RedisMessageSubscriber subscriber) {

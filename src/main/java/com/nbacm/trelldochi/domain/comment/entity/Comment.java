@@ -29,7 +29,10 @@ public class Comment {
 
     private boolean isDeleted = false;
 
-    public Comment(Card findCard, CommentRequestDto commentRequestDto) {
+    private String userEmail;
+
+    public Comment(String userEmail, Card findCard, CommentRequestDto commentRequestDto) {
+        this.userEmail = userEmail;
         title = commentRequestDto.getTitle();
         contents = commentRequestDto.getComments();
         card = findCard;

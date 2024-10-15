@@ -42,7 +42,6 @@ public class Card {
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Attachment> attachmentList = new ArrayList<>();
 

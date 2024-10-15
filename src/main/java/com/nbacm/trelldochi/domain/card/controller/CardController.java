@@ -21,7 +21,9 @@ public class CardController {
 
     // "/todoList/{todoList_id}/cards"
     @PostMapping("/cards")
-    public ResponseEntity<ApiResponse<CardResponseDto>> createCard(@AuthenticationPrincipal AuthUser authUser, @RequestBody CardRequestDto cardRequestDto) {
+    public ResponseEntity<ApiResponse<CardResponseDto>> createCard(
+            @AuthenticationPrincipal AuthUser authUser,
+            @RequestBody CardRequestDto cardRequestDto) {
         CardResponseDto cardResponseDto = cardService.createCard(authUser, cardRequestDto);
         return ResponseEntity.ok(ApiResponse.success("카드 생성 성공", cardResponseDto));
     }
@@ -34,15 +36,18 @@ public class CardController {
 
     @PutMapping("/cards/{cardId}")
     public ResponseEntity<ApiResponse<CardResponseDto>> putCard(
+            @AuthenticationPrincipal AuthUser authUser,
             @PathVariable("cardId") Long cardId,
             @RequestBody CardPatchRequestDto cardPatchRequestDto) {
-        CardResponseDto cardResponseDto = cardService.putCard(cardId, cardPatchRequestDto);
+        CardResponseDto cardResponseDto = cardService.putCard(authUser, cardId, cardPatchRequestDto);
         return ResponseEntity.ok(ApiResponse.success("카드 수정 성공", cardResponseDto));
     }
 
     @PatchMapping("/cards/{cardId}")
-    public ResponseEntity<ApiResponse<Long>> deleteCard(@PathVariable("cardId") Long cardId) {
-        cardService.deleteCard(cardId);
+    public ResponseEntity<ApiResponse<Long>> deleteCard(
+            @AuthenticationPrincipal AuthUser authUser,
+            @PathVariable("cardId") Long cardId) {
+        cardService.deleteCard(authUser, cardId);
         return ResponseEntity.ok(ApiResponse.success("카드 삭제 성공", cardId));
     }
 
