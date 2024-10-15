@@ -33,7 +33,7 @@ public class WorkSpaceAdminController {
     @PatchMapping("/{workspaceId}")
     public ResponseEntity<ApiResponse<WorkSpaceResponseDto>> updateWorkSpace(
             @AuthenticationPrincipal CustomUserDetails authUser,
-            WorkSpaceRequestDto requestDto,
+            @RequestBody WorkSpaceRequestDto requestDto,
             @PathVariable Long workspaceId
     ) {
         return ResponseEntity.ok(
