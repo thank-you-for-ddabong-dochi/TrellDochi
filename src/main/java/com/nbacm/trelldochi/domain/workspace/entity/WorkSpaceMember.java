@@ -1,6 +1,5 @@
 package com.nbacm.trelldochi.domain.workspace.entity;
 
-import com.nbacm.trelldochi.domain.common.enums.DeleteState;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,14 +26,12 @@ public class WorkSpaceMember {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
-    @Enumerated(value = EnumType.STRING)
-    private DeleteState isDeleted;
+    private boolean isDeleted;
 
     public WorkSpaceMember(User user, WorkSpace workSpace, MemberRole role) {
         this.user = user;
         this.workspace = workSpace;
         this.role = role;
-        this.isDeleted = DeleteState.UNDELETED;
         user.getWorkSpaceMembers().add(this);
     }
 
@@ -43,6 +40,6 @@ public class WorkSpaceMember {
     }
 
     public void delete() {
-        this.isDeleted = DeleteState.DELETED;
+        this.isDeleted = true;
     }
 }
