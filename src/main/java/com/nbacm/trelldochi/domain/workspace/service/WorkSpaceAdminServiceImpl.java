@@ -55,7 +55,8 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     public WorkSpaceResponseDto updateWorkSpace(String email, WorkSpaceRequestDto requestDto, Long workspaceId) {
         validatePermission(email, workspaceId);
         WorkSpace workSpace = workSpaceRepository.findByUserEmailAndIdOrElseThrow(email, workspaceId);
-        WorkSpace updatedWorkSpace = workSpaceRepository.save(workSpace.update(requestDto));
+        workSpace.update(requestDto);
+        WorkSpace updatedWorkSpace = workSpaceRepository.save(workSpace);
 
         return new WorkSpaceResponseDto(
                 updatedWorkSpace.getId(),

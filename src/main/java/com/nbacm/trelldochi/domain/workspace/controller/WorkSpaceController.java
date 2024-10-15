@@ -1,7 +1,7 @@
 package com.nbacm.trelldochi.domain.workspace.controller;
 
 import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
-import com.nbacm.trelldochi.domain.common.dto.AuthUser;
+import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceResponseDto;
 import com.nbacm.trelldochi.domain.workspace.service.WorkSpaceServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +17,9 @@ public class WorkSpaceController {
 
     private final WorkSpaceServiceImpl workSpaceService;
 
-    @PostMapping("/{userId}/invitation")
-    public ResponseEntity<ApiResponse<?>> inviteUser(@PathVariable Long userId) {
-        return null;
-    }
-
     @GetMapping
     public ResponseEntity<ApiResponse<Page<WorkSpaceResponseDto>>> getWorkSpaces(
-            @AuthenticationPrincipal AuthUser authUser,
+            @AuthenticationPrincipal CustomUserDetails authUser,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -37,7 +32,7 @@ public class WorkSpaceController {
 
     @GetMapping("/{workspaceId}")
     public ResponseEntity<ApiResponse<WorkSpaceResponseDto>> getWorkSpace(
-            @AuthenticationPrincipal AuthUser authUser,
+            @AuthenticationPrincipal CustomUserDetails authUser,
             @PathVariable(name = "workspaceId") Long workSpaceId
     ) {
         return ResponseEntity.ok(
