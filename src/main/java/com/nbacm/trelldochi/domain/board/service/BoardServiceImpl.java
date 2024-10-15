@@ -40,7 +40,7 @@ public class BoardServiceImpl implements BoardService {
 
         WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow();
 
-        Board board = new Board(boardRequestDto.getTitle(), boardRequestDto.getContents(), null, workSpace);
+        Board board = new Board(boardRequestDto.getTitle(), boardRequestDto.getContents(), workSpace);
 
         Board savedBoard = boardRepository.save(board);
 

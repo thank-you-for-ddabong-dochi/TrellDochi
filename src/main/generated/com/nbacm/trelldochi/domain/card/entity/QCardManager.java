@@ -46,7 +46,7 @@ public class QCardManager extends EntityPathBase<CardManager> {
 
     public QCardManager(Class<? extends CardManager> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.card = inits.isInitialized("card") ? new QCard(forProperty("card")) : null;
+        this.card = inits.isInitialized("card") ? new QCard(forProperty("card"), inits.get("card")) : null;
         this.user = inits.isInitialized("user") ? new com.nbacm.trelldochi.domain.user.entity.QUser(forProperty("user")) : null;
     }
 
