@@ -26,6 +26,8 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     public final StringPath title = createString("title");
 
     public final ListPath<com.nbacm.trelldochi.domain.list.entity.TodoList, com.nbacm.trelldochi.domain.list.entity.QTodoList> todoLists = this.<com.nbacm.trelldochi.domain.list.entity.TodoList, com.nbacm.trelldochi.domain.list.entity.QTodoList>createList("todoLists", com.nbacm.trelldochi.domain.list.entity.TodoList.class, com.nbacm.trelldochi.domain.list.entity.QTodoList.class, PathInits.DIRECT2);

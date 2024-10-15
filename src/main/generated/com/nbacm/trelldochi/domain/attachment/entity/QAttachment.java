@@ -48,7 +48,7 @@ public class QAttachment extends EntityPathBase<Attachment> {
 
     public QAttachment(Class<? extends Attachment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.card = inits.isInitialized("card") ? new com.nbacm.trelldochi.domain.card.entity.QCard(forProperty("card")) : null;
+        this.card = inits.isInitialized("card") ? new com.nbacm.trelldochi.domain.card.entity.QCard(forProperty("card"), inits.get("card")) : null;
     }
 
 }
