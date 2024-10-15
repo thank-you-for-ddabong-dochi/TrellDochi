@@ -7,6 +7,7 @@ import com.nbacm.trelldochi.domain.card.dto.CardResponseDto;
 import com.nbacm.trelldochi.domain.card.service.CardService;
 import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
 import com.nbacm.trelldochi.domain.common.dto.AuthUser;
+import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,9 +21,13 @@ public class CardController {
     private final CardService cardService;
 
     // "/todoList/{todoList_id}/cards"
-    @PostMapping("/cards")
-    public ResponseEntity<ApiResponse<CardResponseDto>> createCard(@AuthenticationPrincipal AuthUser authUser, @RequestBody CardRequestDto cardRequestDto) {
-        CardResponseDto cardResponseDto = cardService.createCard(authUser, cardRequestDto);
+    @PostMapping("/workspace/{workspaceId}/todo/{todoListId}/cards")
+    public ResponseEntity<ApiResponse<CardResponseDto>> createCard(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable("workspaceId") Long workspaceId,
+            @PathVariable("todoListId") Long todoListId,
+            @RequestBody CardRequestDto cardRequestDto) {
+        CardResponseDto cardResponseDto = cardService.createCard(userDetails, workspaceId, todoListId,cardRequestDto);
         return ResponseEntity.ok(ApiResponse.success("카드 생성 성공", cardResponseDto));
     }
 
@@ -32,17 +37,22 @@ public class CardController {
         return ResponseEntity.ok(ApiResponse.success("카드 조회 성공", cardOneResponseDto));
     }
 
-    @PutMapping("/cards/{cardId}")
+    @PutMapping("/workspace/{workspaceId}/cards/{cardId}")
     public ResponseEntity<ApiResponse<CardResponseDto>> putCard(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable("workspaceId") Long workspaceId,
             @PathVariable("cardId") Long cardId,
             @RequestBody CardPatchRequestDto cardPatchRequestDto) {
-        CardResponseDto cardResponseDto = cardService.putCard(cardId, cardPatchRequestDto);
+        CardResponseDto cardResponseDto = cardService.putCard(userDetails, workspaceId, cardId, cardPatchRequestDto);
         return ResponseEntity.ok(ApiResponse.success("카드 수정 성공", cardResponseDto));
     }
 
-    @PatchMapping("/cards/{cardId}")
-    public ResponseEntity<ApiResponse<Long>> deleteCard(@PathVariable("cardId") Long cardId) {
-        cardService.deleteCard(cardId);
+    @PatchMapping("/workspace/{workspaceId}/cards/{cardId}")
+    public ResponseEntity<ApiResponse<Long>> deleteCard(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable("workspaceId") Long workspaceId,
+            @PathVariable("cardId") Long cardId) {
+        cardService.deleteCard(userDetails, workspaceId, cardId);
         return ResponseEntity.ok(ApiResponse.success("카드 삭제 성공", cardId));
     }
 

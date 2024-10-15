@@ -21,7 +21,7 @@ public class TodoList {
     @Column(nullable = false)
     private int listOrder;
 
-    @OneToMany(mappedBy = "todolist")
+    @OneToMany(mappedBy = "todolist", cascade = CascadeType.ALL)
     private List<Card> cardList;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,10 +41,6 @@ public class TodoList {
         this.title = todoListRequestDto.getTitle();
         this.listOrder = todoListRequestDto.getListOrder();
         this.cardList = todoListRequestDto.getCardList();
-    }
-
-    public void addCard(Card card) {
-        this.cardList.add(card);
     }
 
     public void move(int order) {

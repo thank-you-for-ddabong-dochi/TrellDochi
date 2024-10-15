@@ -23,4 +23,8 @@ public class CardManager {
     private User user;
 
 
+    public CardManager(User user, Card card) {
+        this.card = card;
+        this.user = user;
+    }
 }

@@ -42,7 +42,6 @@ public class Card {
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Attachment> attachmentList = new ArrayList<>();
 
@@ -53,11 +52,12 @@ public class Card {
     @JoinColumn(name = "todolist_id")
     private TodoList todolist;
 
-    public Card(CardRequestDto cardRequestDto) {
+    public Card(TodoList findTodoList, CardRequestDto cardRequestDto) {
         this.title = cardRequestDto.getTitle();
         this.explanation = cardRequestDto.getExplanation();
         this.deadline = cardRequestDto.getDeadline();
         this.status = CardStatus.of(cardRequestDto.getStatus());
+        this.todolist = findTodoList;
     }
 
     public Card putCard(CardPatchRequestDto cardPatchRequestDto) {
