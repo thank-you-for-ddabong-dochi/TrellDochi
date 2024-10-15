@@ -72,6 +72,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
                 () -> new WorkSpaceNotFoundException("워크 스페이스가 없습니다.")
         );
         workSpace.delete();
+        workSpaceRepository.save(workSpace);
     }
 
     @Override
