@@ -43,11 +43,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
 
         WorkSpace savedWorkSpace = workSpaceRepository.save(workSpace);
 
-        return new WorkSpaceResponseDto(
-                savedWorkSpace.getId(),
-                savedWorkSpace.getName(),
-                savedWorkSpace.getDescription()
-        );
+        return new WorkSpaceResponseDto(savedWorkSpace);
     }
 
     @Override
@@ -58,11 +54,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
         workSpace.update(requestDto);
         WorkSpace updatedWorkSpace = workSpaceRepository.save(workSpace);
 
-        return new WorkSpaceResponseDto(
-                updatedWorkSpace.getId(),
-                updatedWorkSpace.getName(),
-                updatedWorkSpace.getDescription()
-        );
+        return new WorkSpaceResponseDto(updatedWorkSpace);
     }
 
     @Override
