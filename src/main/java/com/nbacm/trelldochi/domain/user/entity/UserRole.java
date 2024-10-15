@@ -13,4 +13,8 @@ public enum UserRole {
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("유효하지 않은 UerRole"));
     }
+
+    public String toUpperCase() {
+        return name().toUpperCase();
+    }
 }
