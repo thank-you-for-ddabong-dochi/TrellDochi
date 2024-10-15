@@ -32,6 +32,8 @@ public class QCard extends EntityPathBase<Card> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     public final ListPath<CardManager, QCardManager> managerList = this.<CardManager, QCardManager>createList("managerList", CardManager.class, QCardManager.class, PathInits.DIRECT2);
 
     public final EnumPath<CardStatus> status = createEnum("status", CardStatus.class);
