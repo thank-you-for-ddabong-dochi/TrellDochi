@@ -23,7 +23,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final NotificationService notificationService;
 
 
     @Transactional
@@ -44,7 +43,6 @@ public class UserServiceImpl implements UserService {
                 role
         );
         userRepository.save(user);
-        notificationService.sendRealTimeNotification("회원가입 성공","사용자가 회원가입에 성공했습니다.");
         return UserResponseDto.from(user);
 
     }
@@ -62,7 +60,6 @@ public class UserServiceImpl implements UserService {
 
         // JWT 토큰 생성
         String token = jwtUtil.createToken(user.getEmail(),user.getUserRole());
-        notificationService.sendRealTimeNotification("로그인 성공","사용자가 로그인 했습니다.");
         return token;
     }
 
