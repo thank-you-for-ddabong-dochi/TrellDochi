@@ -5,6 +5,7 @@ import com.nbacm.trelldochi.domain.card.dto.CardPatchRequestDto;
 import com.nbacm.trelldochi.domain.card.dto.CardRequestDto;
 import com.nbacm.trelldochi.domain.comment.entity.Comment;
 import com.nbacm.trelldochi.domain.list.entity.TodoList;
+import org.hibernate.annotations.BatchSize;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,6 +49,7 @@ public class Card {
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Attachment> attachmentList = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<CardManager> managerList = new ArrayList<>();
 
