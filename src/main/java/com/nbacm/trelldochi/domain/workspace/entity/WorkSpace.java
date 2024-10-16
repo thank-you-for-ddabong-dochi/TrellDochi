@@ -23,7 +23,7 @@ public class WorkSpace {
     private Long id;
     private String name;
     private String description;
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

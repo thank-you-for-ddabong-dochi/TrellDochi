@@ -67,7 +67,7 @@ public class WorkSpaceQueryDslRepositoryImpl implements WorkSpaceQueryDslReposit
         queryFactory.update(todoList)
                 .set(todoList.isDeleted, true)
                 .where(
-                        todoList.id.eq(todoList.id)
+                        todoList.board.workSpace.id.eq(workspaceId)
                 )
                 .execute();
 
@@ -75,7 +75,7 @@ public class WorkSpaceQueryDslRepositoryImpl implements WorkSpaceQueryDslReposit
         queryFactory.update(card)
                 .set(card.isDeleted, true)
                 .where(
-                        card.todolist.id.eq(todoList.id)
+                        card.todolist.board.workSpace.id.eq(workspaceId)
                 )
                 .execute();
         entityManager.flush();

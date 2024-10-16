@@ -28,6 +28,8 @@ public class WorkSpaceMember {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
+    private Boolean isDeleted = false;
+
     public WorkSpaceMember(User user, WorkSpace workSpace, MemberRole role) {
         this.user = user;
         this.workspace = workSpace;

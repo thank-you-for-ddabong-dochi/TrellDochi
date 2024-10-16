@@ -24,6 +24,8 @@ public class QWorkSpaceMember extends EntityPathBase<WorkSpaceMember> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     public final EnumPath<MemberRole> role = createEnum("role", MemberRole.class);
 
     public final com.nbacm.trelldochi.domain.user.entity.QUser user;

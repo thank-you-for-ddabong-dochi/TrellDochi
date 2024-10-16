@@ -36,6 +36,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardQueryDslRepositoryImpl boardQueryDslRepositoryImpl;
     private final AwsS3Service awsS3Service;
     private final NotificationService notificationService;
+    private final BoardRepositoryImpl boardRepositoryImpl;
 
 
     @Override
@@ -117,7 +118,7 @@ public class BoardServiceImpl implements BoardService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        boardQueryDslRepositoryImpl.deleteRelations(board.getId());
+        boardQueryDslRepositoryImpl.deleteRelations(boardId);
 
         return new BoardResponseDto(board);
     }

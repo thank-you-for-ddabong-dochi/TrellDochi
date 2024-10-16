@@ -46,7 +46,7 @@ public class WorkSpaceAdminController {
     @PatchMapping("/{workspaceId}")
     public ResponseEntity<ApiResponse<Long>> deleteWorkSpace(
             @AuthenticationPrincipal CustomUserDetails authUser,
-            @PathVariable Long workspaceId
+            @PathVariable(name = "workspaceId") Long workspaceId
     ) {
         workSpaceAdminService.deleteWorkSpace(authUser.getEmail(), workspaceId);
         // 필요시 반환값 추가
