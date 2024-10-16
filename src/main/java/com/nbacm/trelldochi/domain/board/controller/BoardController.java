@@ -33,7 +33,7 @@ public class BoardController {
 
     // 현재 워크스페이스의 보드 전체 조회
     @GetMapping("/workspace/{workspaceId}/boards")
-    public ResponseEntity<?> getAllBoard(@PathVariable Long workspaceId) {
+    public ResponseEntity<?> getAllBoard(@PathVariable("workspaceId") Long workspaceId) {
 
         List<BoardResponseDto> boardResponseDtoList = boardService.getAllBoard(workspaceId);
 
@@ -41,7 +41,7 @@ public class BoardController {
     }
 
     @GetMapping("/workspace/{workspaceId}/boards/{boardId}")
-    public ResponseEntity<?> getBoard(@PathVariable Long workspaceId, @PathVariable Long boardId) {
+    public ResponseEntity<?> getBoard(@PathVariable("workspaceId") Long workspaceId, @PathVariable("boardId") Long boardId) {
 
         BoardResponseDto boardResponseDto = boardService.getBoard(workspaceId, boardId);
 
@@ -49,8 +49,8 @@ public class BoardController {
     }
 
     @PutMapping("/workspace/{workspaceId}/boards/{boardId}")
-    public ResponseEntity<?> updateBoard(@PathVariable Long workspaceId,
-                                         @PathVariable Long boardId,
+    public ResponseEntity<?> updateBoard(@PathVariable("workspaceId") Long workspaceId,
+                                         @PathVariable("boardId") Long boardId,
                                          @RequestBody BoardRequestDto boardRequestDto,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 
@@ -60,8 +60,8 @@ public class BoardController {
     }
 
     @DeleteMapping("/workspace/{workspaceId}/boards/{boardId}")
-    public ResponseEntity<?> deleteBoard(@PathVariable Long workspaceId,
-                                         @PathVariable Long boardId,
+    public ResponseEntity<?> deleteBoard(@PathVariable("workspaceId") Long workspaceId,
+                                         @PathVariable("boardId") Long boardId,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         BoardResponseDto boardResponseDto = boardService.deleteBoard(workspaceId, boardId, userDetails);
