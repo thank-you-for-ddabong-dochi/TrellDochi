@@ -2,6 +2,7 @@ package com.nbacm.trelldochi.domain.workspace.repository;
 
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceResponseDto;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpace;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static com.nbacm.trelldochi.domain.board.entity.QBoard.board;
 import static com.nbacm.trelldochi.domain.card.entity.QCard.card;
+import static com.nbacm.trelldochi.domain.comment.entity.QComment.comment;
 import static com.nbacm.trelldochi.domain.list.entity.QTodoList.todoList;
 import static com.nbacm.trelldochi.domain.workspace.entity.QWorkSpace.workSpace;
 import static com.nbacm.trelldochi.domain.workspace.entity.QWorkSpaceMember.workSpaceMember;
@@ -55,29 +57,55 @@ public class WorkSpaceQueryDslRepositoryImpl implements WorkSpaceQueryDslReposit
 
     @Override
     public void deleteRelationBoards(Long workspaceId) {
+
         queryFactory
                 .update(board)
+                .set(board.isDeleted, true)
                 .where(
                         board.workSpace.id.eq(workspaceId)
                 )
-                .set(board.isDeleted, true)
                 .execute();
 
         // todoList softDelete
         queryFactory.update(todoList)
                 .set(todoList.isDeleted, true)
                 .where(
-                        todoList.board.workSpace.id.eq(workspaceId)
+                        todoList.id.in(
+                                JPAExpressions
+                                        .select(board.id)
+                                        .from(board)
+                                        .join(board.workSpace, workSpace)
+                                        .where(workSpace.id.eq(workspaceId))
+                        )
+
                 )
                 .execute();
 
-        // card softDelete
         queryFactory.update(card)
                 .set(card.isDeleted, true)
-                .where(
-                        card.todolist.board.workSpace.id.eq(workspaceId)
-                )
+                .where(card.todolist.id.in(
+                        JPAExpressions
+                                .select(todoList.id)
+                                .from(todoList)
+                                .join(todoList.board, board)
+                                .join(board.workSpace, workSpace)
+                                .where(workSpace.id.eq(workspaceId))
+                ))
                 .execute();
+
+        queryFactory.update(comment)
+                .set(comment.isDeleted, true)
+                .where(comment.card.id.in(
+                        JPAExpressions
+                                .select(card.id)
+                                .from(card)
+                                .join(card.todolist, todoList)
+                                .join(todoList.board, board)
+                                .join(board.workSpace, workSpace)
+                                .where(workSpace.id.eq(workspaceId))
+                ))
+                .execute();
+
         entityManager.flush();
         entityManager.clear();
     }

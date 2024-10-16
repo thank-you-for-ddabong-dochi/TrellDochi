@@ -23,6 +23,7 @@ public class WorkSpace {
     private Long id;
     private String name;
     private String description;
+    @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
