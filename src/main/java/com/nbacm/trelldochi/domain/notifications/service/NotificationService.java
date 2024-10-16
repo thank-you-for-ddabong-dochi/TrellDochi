@@ -23,17 +23,16 @@ public class NotificationService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final SimpMessagingTemplate messagingTemplate; // WebSocket 메시지 발송을 위한 SimpMessagingTemplate 추가
 
 
     public void sendRealTimeNotification(String eventType,String message) {
+
         try {
             // Redis에 알림 발행
             log.info("실시간 알림 전송 중: {} - {}", eventType, message);
             redisTemplate.convertAndSend("notifications." + eventType, message);
             log.info("Redis 채널로 실시간 알림 전송 완료: {}", eventType);
-            messagingTemplate.convertAndSend("/topic/notifications/" + eventType, message);
-            log.info("WebSocket으로 알림 전송 완료: {}", eventType);
+
 
         } catch (Exception e) {
             log.error("실시간 알림 전송 중 오류 발생: ", e);
