@@ -1,5 +1,6 @@
 package com.nbacm.trelldochi.domain.board.service;
 
+import com.nbacm.trelldochi.domain.attachment.service.AwsS3Service;
 import com.nbacm.trelldochi.domain.board.dto.BoardRequestDto;
 import com.nbacm.trelldochi.domain.board.dto.BoardResponseDto;
 import com.nbacm.trelldochi.domain.board.entity.Board;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -31,18 +33,20 @@ public class BoardServiceImpl implements BoardService {
     private final UserRepository userRepository;
     private final WorkSpaceMemberRepository workSpaceMemberRepository;
     private final BoardQueryDslRepositoryImpl boardQueryDslRepositoryImpl;
+    private final AwsS3Service awsS3Service;
 
 
     @Override
     @Transactional
-    public BoardResponseDto createBoard(Long workspaceId, BoardRequestDto boardRequestDto, CustomUserDetails userDetails) {
+    public BoardResponseDto createBoard(Long workspaceId, BoardRequestDto boardRequestDto, MultipartFile image, CustomUserDetails userDetails) {
 
         if(!isAuthorized(workspaceId, userDetails)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        if(boardRequestDto.getBackgroundImageUrl() != null) {
-
+        if(image != null) {
+            String profileImage = awsS3Service.upload(image);
+            boardRequestDto.addImageUrl(profileImage);
         }
 
         WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException("Work Space Not Found"));
@@ -78,10 +82,15 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public BoardResponseDto updateBoard(Long workspaceId, Long boardId, BoardRequestDto boardRequestDto, CustomUserDetails userDetails) {
+    public BoardResponseDto updateBoard(Long workspaceId, Long boardId, BoardRequestDto boardRequestDto, MultipartFile image, CustomUserDetails userDetails) {
 
         if(!isAuthorized(workspaceId, userDetails)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        if(image != null) {
+            String profileImage = awsS3Service.upload(image);
+            boardRequestDto.addImageUrl(profileImage);
         }
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board Not Found"));

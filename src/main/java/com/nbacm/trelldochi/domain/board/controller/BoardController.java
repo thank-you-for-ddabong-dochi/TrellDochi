@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,10 +24,11 @@ public class BoardController {
     // 보드 생성
     @PostMapping("/workspace/{workspaceId}")
     public ResponseEntity<?> createBoard(@PathVariable("workspaceId") Long workspaceId,
-                                         @RequestBody BoardRequestDto boardRequestDto,
+                                         @RequestPart(name = "dto") BoardRequestDto boardRequestDto,
+                                         @RequestPart(name = "image") MultipartFile image,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        BoardResponseDto boardResponseDto = boardService.createBoard(workspaceId, boardRequestDto, userDetails);
+        BoardResponseDto boardResponseDto = boardService.createBoard(workspaceId, boardRequestDto, image, userDetails);
 
         return ResponseEntity.ok(ApiResponse.success("보드 생성 성공",boardResponseDto));
     }
@@ -51,10 +53,11 @@ public class BoardController {
     @PutMapping("/workspace/{workspaceId}/boards/{boardId}")
     public ResponseEntity<?> updateBoard(@PathVariable("workspaceId") Long workspaceId,
                                          @PathVariable("boardId") Long boardId,
-                                         @RequestBody BoardRequestDto boardRequestDto,
+                                         @RequestPart(name = "dto") BoardRequestDto boardRequestDto,
+                                         @RequestPart(name = "image") MultipartFile image,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        BoardResponseDto boardResponseDto = boardService.updateBoard(workspaceId, boardId, boardRequestDto, userDetails);
+        BoardResponseDto boardResponseDto = boardService.updateBoard(workspaceId, boardId, boardRequestDto, image, userDetails);
 
         return ResponseEntity.ok(ApiResponse.success("보드 수정 성공", boardResponseDto));
     }

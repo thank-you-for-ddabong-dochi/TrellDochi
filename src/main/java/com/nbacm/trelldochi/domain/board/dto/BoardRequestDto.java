@@ -24,4 +24,8 @@ public class BoardRequestDto {
         this.backgroundImageUrl = backgroundImageUrl;
         this.todoLists = todoLists;
     }
+
+    public void addImageUrl(String imageUrl) {
+        this.backgroundImageUrl = imageUrl;
+    }
 }
