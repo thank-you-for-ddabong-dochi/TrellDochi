@@ -1,5 +1,8 @@
 package com.nbacm.trelldochi.domain.card.service;
 
+import com.nbacm.trelldochi.domain.card.dto.CardResponseDto;
+import com.nbacm.trelldochi.domain.card.entity.Card;
+import com.nbacm.trelldochi.domain.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,6 +17,8 @@ public class CardViewService {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private CardRepository cardRepository;
 
     // 조회수 증가 기능
     public void incrementCardViewCount(Long cardId) {
@@ -38,5 +43,19 @@ public class CardViewService {
         if(keys != null && !keys.isEmpty()) {
             redisTemplate.delete(keys); // 해당 키들을 Redis 에서 삭제 (조회수 초기화)
         }
+    }
+
+    // Cache 없이 viewCount 설정
+    public CardResponseDto getCard(Long cardId) {
+
+        // 카드 조회
+        Card card = cardRepository.findById(cardId).orElseThrow();
+
+        // 카드 조회수 증가
+        card.addViewCount(card.getViewCount() + 1);
+        cardRepository.save(card);
+
+        // 카드 정보 반환
+        return new CardResponseDto(card);
     }
 }
