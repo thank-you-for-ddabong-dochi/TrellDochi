@@ -62,10 +62,13 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     @Override
     @Transactional
     public void deleteWorkSpace(String email, Long workspaceId) {
-        validatePermission(email, workspaceId);
+        User user = userRepository.findByEmailOrElseThrow(email);
         WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(
                 () -> new WorkSpaceNotFoundException("워크 스페이스가 없습니다.")
         );
+        if (!workSpace.getOwner().getId().equals(user.getId())) {
+            throw new WorkSpaceAccessDeniedException("워크 스페이스 소유자가 아닙니다.");
+        };
         workSpace.delete();
         workSpaceRepository.deleteRelationBoards(workspaceId);
     }
@@ -73,7 +76,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     @Override
     @Transactional
     public WorkSpaceMemberResponseDto changeMemberRole(String email, Long workspaceId, Long memberId, String role) {
-        validatePermission(email,workspaceId);
+        validatePermission(email, workspaceId);
         WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(memberId, workspaceId).orElseThrow(
                 () -> new WorkSpaceNotFoundException("워크 스페이스가 존재하지 않습니다.")
         );
@@ -86,7 +89,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     @Override
     @Transactional
     public void deleteMember(String email, Long workspaceId, Long memberId) {
-        validatePermission(email,workspaceId);
+        validatePermission(email, workspaceId);
         WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(memberId, workspaceId).orElseThrow(
                 () -> new WorkSpaceNotFoundException("워크 스페이스가 존재하지 않습니다.")
         );
