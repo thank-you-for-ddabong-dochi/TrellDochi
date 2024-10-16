@@ -35,7 +35,7 @@ public class InvitationAdminServiceImpl implements InvitationAdminService {
             throw new AlreadyExistsException("워크스페이스에 멤버가 이미 존재합니다.");
         }
         exists = invatationRepository.existsByWorkspaceIdAndReceivedUserIdAndRequestUserId(workspaceId, receivedUser.getId(), user.getId());
-        if(exists){
+        if (exists) {
             throw new AlreadyExistsException("이미 초대가 요청된 멤버입니다.");
         }
 
@@ -61,6 +61,6 @@ public class InvitationAdminServiceImpl implements InvitationAdminService {
         if (!user.getId().equals(workSpaceInvitation.getRequestUserId())) {
             throw new InvitationPermissionException("접근 권한이 없습니다.");
         }
-        workSpaceInvitation.changeStatus(workSpaceInvitation.getStatus(), INVITATION_STATUS.CANCELED);
+        invatationRepository.delete(workSpaceInvitation);
     }
 }
