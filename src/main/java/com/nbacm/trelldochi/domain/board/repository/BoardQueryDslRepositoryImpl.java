@@ -4,6 +4,7 @@ import com.nbacm.trelldochi.domain.board.entity.QBoard;
 import com.nbacm.trelldochi.domain.list.entity.QTodoList;
 import com.querydsl.core.QueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardQueryDslRepositoryImpl implements BoardQueryDslRepository {
 
     @Autowired
+    private EntityManager entityManager;
     private JPAQueryFactory queryFactory;
 
     QBoard qBoard = QBoard.board;
@@ -32,5 +34,8 @@ public class BoardQueryDslRepositoryImpl implements BoardQueryDslRepository {
                 .set(qTodoList.isDeleted, true)
                 .where(qTodoList.board.id.eq(boardId))
                 .execute();
+
+        entityManager.flush();
+        entityManager.clear();
     }
 }

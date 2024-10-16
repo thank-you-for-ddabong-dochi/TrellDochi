@@ -4,6 +4,7 @@ import com.nbacm.trelldochi.domain.card.entity.QCard;
 import com.nbacm.trelldochi.domain.comment.entity.QComment;
 import com.nbacm.trelldochi.domain.list.entity.QTodoList;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TodoListQueryDslRepositoryImpl implements TodoListQueryDslRepository {
 
     @Autowired
+    private EntityManager entityManager;
     private JPAQueryFactory queryFactory;
 
     QTodoList qTodoList = QTodoList.todoList;
@@ -31,6 +33,7 @@ public class TodoListQueryDslRepositoryImpl implements TodoListQueryDslRepositor
                 .set(qCard.isDeleted, true)
                 .where(qCard.todolist.id.eq(todoListId))
                 .execute();
-
+        entityManager.flush();
+        entityManager.clear();
     }
 }
