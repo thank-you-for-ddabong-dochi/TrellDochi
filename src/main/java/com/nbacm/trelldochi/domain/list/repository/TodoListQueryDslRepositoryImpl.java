@@ -3,8 +3,8 @@ package com.nbacm.trelldochi.domain.list.repository;
 import com.nbacm.trelldochi.domain.card.entity.QCard;
 import com.nbacm.trelldochi.domain.comment.entity.QComment;
 import com.nbacm.trelldochi.domain.list.entity.QTodoList;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class TodoListQueryDslRepositoryImpl implements TodoListQueryDslRepository {
 
     @Autowired
-    private EntityManager entityManager;
     private JPAQueryFactory queryFactory;
 
     QTodoList qTodoList = QTodoList.todoList;
     QCard qCard = QCard.card;
+    QComment qComment = QComment.comment;
 
     @Override
     @Transactional
@@ -33,7 +33,16 @@ public class TodoListQueryDslRepositoryImpl implements TodoListQueryDslRepositor
                 .set(qCard.isDeleted, true)
                 .where(qCard.todolist.id.eq(todoListId))
                 .execute();
-        entityManager.flush();
-        entityManager.clear();
+
+        // comment softDelete
+        queryFactory.update(qComment)
+                .set(qComment.isDeleted, true)
+                .where(qComment.card.id.in(
+                        JPAExpressions.select(qCard.id)
+                                .from(qCard)
+                                .join(qCard.todolist, qTodoList)
+                                .where(qTodoList.id.eq(todoListId))
+                ))
+                .execute();
     }
 }
