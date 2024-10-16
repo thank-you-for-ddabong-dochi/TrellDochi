@@ -7,6 +7,7 @@ import com.nbacm.trelldochi.domain.card.entity.CardStatus;
 import com.nbacm.trelldochi.domain.card.exception.CardForbiddenException;
 import com.nbacm.trelldochi.domain.card.exception.CardManagerAlreadyExistException;
 import com.nbacm.trelldochi.domain.card.exception.CardNotFoundException;
+import com.nbacm.trelldochi.domain.card.exception.CardNotUpdate;
 import com.nbacm.trelldochi.domain.card.repository.CardManagerRepository;
 import com.nbacm.trelldochi.domain.card.repository.CardRepository;
 import com.nbacm.trelldochi.domain.comment.entity.Comment;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,10 +102,14 @@ public class CardServiceImpl implements CardService {
     public CardResponseDto putCard(CustomUserDetails customUserDetails, Long workspaceId, Long cardId, CardPatchRequestDto cardPatchRequestDto) {
         Card findCard = findCard(cardId);
 
-        // workspace 접근 권한 환인하기
-        isAuthInWorkSpace(customUserDetails, workspaceId);
-        notificationService.sendRealTimeNotification("카드 변경",findCard.getTitle().toString()+"해당 카드가 변경이 되었어요!");
-        return new CardResponseDto(findCard.putCard(cardPatchRequestDto));
+        try {
+            // workspace 접근 권한 환인하기
+            isAuthInWorkSpaceAndLock(customUserDetails, workspaceId);
+            notificationService.sendRealTimeNotification("카드 변경",findCard.getTitle().toString()+"해당 카드가 변경이 되었어요!");
+            return new CardResponseDto(findCard.putCard(cardPatchRequestDto));
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new CardNotUpdate(e);
+        }
 
     }
 
@@ -174,6 +180,19 @@ public class CardServiceImpl implements CardService {
     private WorkSpaceMember isAuthInWorkSpace(CustomUserDetails customUserDetails, Long workspaceId){
         // 워크 스페이스에 권한이 없는 경우(추가가 안된 경우)
         WorkSpaceMember findWorkSpaceMember = workSpaceRepository.findByUserEmailAndWorkspaceId(customUserDetails.getEmail(), workspaceId)
+                .orElseThrow(() -> new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다."));
+
+        // 권한이 readonly인 경우 생성 불가
+        if (findWorkSpaceMember.getRole() == MemberRole.READONLY) {
+            throw new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다.");
+        }
+
+        return findWorkSpaceMember;
+    }
+
+    private WorkSpaceMember isAuthInWorkSpaceAndLock(CustomUserDetails customUserDetails, Long workspaceId){
+        // 워크 스페이스에 권한이 없는 경우(추가가 안된 경우)
+        WorkSpaceMember findWorkSpaceMember = workSpaceRepository.findByUserEmailAndWorkspaceIdAndLock(customUserDetails.getEmail(), workspaceId)
                 .orElseThrow(() -> new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다."));
 
         // 권한이 readonly인 경우 생성 불가
