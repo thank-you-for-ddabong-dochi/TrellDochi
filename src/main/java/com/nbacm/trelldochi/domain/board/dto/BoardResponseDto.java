@@ -11,8 +11,9 @@ import java.util.List;
 public class BoardResponseDto {
 
     private String title;
-    private String contents;
-    private List<TodoList> todoLists;
+    private String backgroundColor;
+    private String backgroundImageUrl;
+    private List<ListSummaryDto> todoLists;
     private Long workspaceId;
 
     public BoardResponseDto() {
@@ -20,8 +21,11 @@ public class BoardResponseDto {
 
     public BoardResponseDto(Board board) {
         this.title = board.getTitle();
-        this.contents = board.getContents();
-        this.todoLists = board.getTodoLists();
+        this.backgroundColor = board.getBackgroundColor();
+        this.backgroundImageUrl = board.getBackgroundImageUrl();
+        if(board.getTodoLists() != null) {
+            this.todoLists = board.getTodoLists().stream().map(ListSummaryDto::new).toList();
+        }
         this.workspaceId = board.getWorkSpace().getId();
 
     }

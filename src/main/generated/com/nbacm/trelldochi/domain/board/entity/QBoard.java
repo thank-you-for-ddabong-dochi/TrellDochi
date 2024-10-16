@@ -22,7 +22,9 @@ public class QBoard extends EntityPathBase<Board> {
 
     public static final QBoard board = new QBoard("board");
 
-    public final StringPath contents = createString("contents");
+    public final StringPath backgroundColor = createString("backgroundColor");
+
+    public final StringPath backgroundImageUrl = createString("backgroundImageUrl");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 

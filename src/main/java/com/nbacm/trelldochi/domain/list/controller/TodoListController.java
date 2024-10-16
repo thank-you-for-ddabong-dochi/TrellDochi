@@ -20,7 +20,7 @@ public class TodoListController {
     private final TodoListService todoListService;
 
     @PostMapping("boards/{boardId}")
-    public ResponseEntity<?> createBoard(@PathVariable("boardId") Long boardId,
+    public ResponseEntity<?> createTodoList(@PathVariable("boardId") Long boardId,
                                          @RequestBody TodoListRequestDto todoListRequestDto,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 
@@ -29,8 +29,18 @@ public class TodoListController {
         return ResponseEntity.ok(ApiResponse.success("리스트 생성 성공", todoListResponseDto));
     }
 
+    @GetMapping("boards/{boardId}/todoList/{todoListId}")
+    public ResponseEntity<?> getTodoList(@PathVariable("boardId") Long boardId,
+                                      @PathVariable("todoListId") Long todoListId,
+                                      @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        TodoListResponseDto todoListResponseDto = todoListService.getTodoList(boardId, todoListId, userDetails);
+
+        return ResponseEntity.ok(ApiResponse.success("보드 조회 성공", todoListResponseDto));
+    }
+
     @PutMapping("boards/{boardId}/todoList/{todoListId}")
-    public ResponseEntity<?> updateList(@PathVariable("boardId") Long boardId,
+    public ResponseEntity<?> updateTodoList(@PathVariable("boardId") Long boardId,
                                         @PathVariable("todoListId") Long todoListId,
                                         @RequestBody TodoListRequestDto todoListRequestDto,
                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -41,7 +51,7 @@ public class TodoListController {
     }
 
     @PatchMapping("boards/{boardId}")
-    public ResponseEntity<?> moveList(@PathVariable("boardId") Long boardId,
+    public ResponseEntity<?> moveTodoList(@PathVariable("boardId") Long boardId,
                                       @RequestBody MoveListRequestDto moveListRequestDto) {
 
         todoListService.moveTodoList(moveListRequestDto);
@@ -49,8 +59,8 @@ public class TodoListController {
         return ResponseEntity.ok(ApiResponse.success("리스트 순서 변경 성공", ""));
     }
 
-    @DeleteMapping("boards/{boardId}/todoList/{todoListId}")
-    public ResponseEntity<?> deleteList(@PathVariable("boardId") Long boardId,
+    @PatchMapping("boards/{boardId}/todoList/{todoListId}")
+    public ResponseEntity<?> deleteTodoList(@PathVariable("boardId") Long boardId,
                                         @PathVariable("todoListId") Long todoListId,
                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
 

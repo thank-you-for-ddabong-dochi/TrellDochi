@@ -22,8 +22,11 @@ public class Board {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private String contents;
+    @Column
+    private String backgroundColor = "#FFFFFF";
+
+    @Column
+    private String backgroundImageUrl;
 
     @OneToMany(mappedBy = "board")
     private List<TodoList> todoLists;
@@ -35,15 +38,17 @@ public class Board {
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
-    public Board(String title, String contents, WorkSpace workSpace) {
+    public Board(String title, String backgroundColor, String backgroundImageUrl, WorkSpace workSpace) {
         this.title = title;
-        this.contents = contents;
+        this.backgroundColor = backgroundColor;
+        this.backgroundImageUrl = backgroundImageUrl;
         this.workSpace = workSpace;
     }
 
     public void update(BoardRequestDto boardRequestDto) {
         this.title = boardRequestDto.getTitle();
-        this.contents = boardRequestDto.getContents();
+        this.backgroundColor = boardRequestDto.getBackgroundColor();
+        this.backgroundImageUrl = boardRequestDto.getBackgroundImageUrl();
         this.todoLists = boardRequestDto.getTodoLists();
     }
 

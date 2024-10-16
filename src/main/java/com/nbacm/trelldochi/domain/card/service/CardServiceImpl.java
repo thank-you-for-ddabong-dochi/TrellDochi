@@ -38,6 +38,7 @@ public class CardServiceImpl implements CardService {
     private final TodoRepository todoRepository;
     private final CardManagerRepository cardManagerRepository;
     private final UserRepository userRepository;
+    private final CardViewService cardViewService;
 
     @Override
     @Transactional
@@ -61,8 +62,13 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     public CardOneResponseDto getCard(Long cardId) {
+
         Card findCard = findCard(cardId);
+
+        cardViewService.incrementCardViewCount(findCard);
+
         return new CardOneResponseDto(findCard);
     }
 
