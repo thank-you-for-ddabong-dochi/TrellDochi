@@ -47,7 +47,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
         );
 
         WorkSpace savedWorkSpace = workSpaceRepository.save(workSpace);
-        notificationService.sendRealTimeNotification("워크 스페이스 생성",workSpace.getName().toString()+"워크 스페이스가 생성 되었습니다.");
+        notificationService.sendRealTimeNotification("워크 스페이스 생성",workSpace.getName().toString()+" 워크 스페이스가 생성 되었습니다.");
         return new WorkSpaceResponseDto(savedWorkSpace);
     }
 

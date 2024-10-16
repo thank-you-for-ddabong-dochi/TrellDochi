@@ -33,15 +33,19 @@ public class NotificationService {
             redisTemplate.convertAndSend("notifications." + eventType, message);
             log.info("Redis 채널로 실시간 알림 전송 완료: {}", eventType);
 
-
         } catch (Exception e) {
             log.error("실시간 알림 전송 중 오류 발생: ", e);
         }
     }
 
+    /**
+     * Slack으로 알림 전송
+     * @param webhookUrl Slack Webhook URL
+     * @param jsonMessage JSON 형식의 메시지
+     */
     public void sendSlackNotification(String webhookUrl, String jsonMessage) {
         try {
-            log.info("Slack에 대한 메시지를 받았습니다: {}", jsonMessage);
+            log.info("Received message for Slack: {}", jsonMessage);
 
             String message = extractMessage(jsonMessage);
 
@@ -53,14 +57,14 @@ public class NotificationService {
 
             String jsonPayload = objectMapper.writeValueAsString(payload);
 
-            log.debug("Slack으로 페이로드: {}", jsonPayload);
+            log.debug("Sending payload to Slack: {}", jsonPayload);
 
             HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
 
             String response = restTemplate.postForObject(webhookUrl, request, String.class);
-            log.info("슬랙 알림이 성공적으로 전송 되었습니다. Response: {}", response);
+            log.info("Slack notification sent successfully. Response: {}", response);
         } catch (Exception e) {
-            log.error("Slack 알림 전송 오류: ", e);
+            log.error("Error sending Slack notification: ", e);
         }
     }
 
@@ -68,21 +72,23 @@ public class NotificationService {
         try {
             JsonNode rootNode = objectMapper.readTree(jsonMessage);
             if (rootNode.isObject()) {
+                // 메시지가 포함된 필드를 찾음
                 for (String fieldName : new String[]{"message", "text", "content"}) {
                     JsonNode node = rootNode.get(fieldName);
                     if (node != null && node.isTextual()) {
                         return node.asText();
                     }
                 }
+                // 특정 필드를 찾지 못한 경우, 전체 JSON을 메시지로 사용
                 return rootNode.toString();
             } else if (rootNode.isTextual()) {
-                return rootNode.asText();
+                return rootNode.asText(); // 루트가 텍스트 노드인 경우 바로 반환
             } else {
-                return rootNode.toString();
+                return rootNode.toString(); // 기타 경우에는 전체 JSON 문자열 반환
             }
         } catch (Exception e) {
             log.error("Error parsing JSON message: ", e);
-            return jsonMessage;
+            return jsonMessage; // 파싱 실패 시 원본 메시지 반환
         }
     }
 }
