@@ -5,6 +5,7 @@ import com.nbacm.trelldochi.domain.invitation.enums.INVITATION_STATUS;
 import com.nbacm.trelldochi.domain.invitation.exception.InvitationNotFoundException;
 import com.nbacm.trelldochi.domain.invitation.exception.InvitationPermissionException;
 import com.nbacm.trelldochi.domain.invitation.repository.InvitationRepository;
+import com.nbacm.trelldochi.domain.notifications.service.NotificationService;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import com.nbacm.trelldochi.domain.user.repository.UserRepository;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpace;
@@ -23,6 +24,7 @@ public class InvitationServiceImpl implements InvitationService {
     private final InvitationRepository invitationRepository;
     private final WorkSpaceMemberRepository workSpaceMemberRepository;
     private final WorkSpaceRepository workSpaceRepository;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -40,6 +42,9 @@ public class InvitationServiceImpl implements InvitationService {
         );
         WorkSpaceMember workSpaceMember = new WorkSpaceMember(user, workSpace, workSpaceInvitation.getRole());
         workSpaceMemberRepository.save(workSpaceMember);
+        notificationService.sendRealTimeNotification("멤버 초대","워크스페이스에 동료가 합류 했어요!");
+
+
     }
 
     @Override

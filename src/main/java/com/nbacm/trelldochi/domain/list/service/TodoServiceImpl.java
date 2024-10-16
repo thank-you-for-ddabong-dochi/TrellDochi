@@ -11,6 +11,7 @@ import com.nbacm.trelldochi.domain.list.dto.TodoListResponseDto;
 import com.nbacm.trelldochi.domain.list.entity.TodoList;
 import com.nbacm.trelldochi.domain.list.repository.TodoListQueryDslRepositoryImpl;
 import com.nbacm.trelldochi.domain.list.repository.TodoRepository;
+import com.nbacm.trelldochi.domain.notifications.service.NotificationService;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import com.nbacm.trelldochi.domain.user.repository.UserRepository;
 import com.nbacm.trelldochi.domain.workspace.entity.MemberRole;
@@ -33,6 +34,7 @@ public class TodoServiceImpl implements TodoListService {
     private final BoardRepository boardRepository;
     private final WorkSpaceMemberRepository workSpaceMemberRepository;
     private final TodoListQueryDslRepositoryImpl todoListQueryDslRepositoryImpl;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -50,6 +52,8 @@ public class TodoServiceImpl implements TodoListService {
         TodoList todoList = new TodoList(todoListRequestDto.getTitle(), todoListRequestDto.getListOrder(), board);
 
         TodoList savedTodoList = todoRepository.save(todoList);
+
+        notificationService.sendRealTimeNotification("리스트 생성",todoList.getTitle().toString()+"리스트가 생성되었어요!");
 
         return new TodoListResponseDto(savedTodoList);
     }
@@ -76,6 +80,7 @@ public class TodoServiceImpl implements TodoListService {
 
         todoList.move(targetOrder);
         todoRepository.save(todoList);
+        notificationService.sendRealTimeNotification("리스트 이동",todoList.getTitle().toString()+"리스트가 이동되었어요!");
     }
 
     @Override
@@ -106,7 +111,7 @@ public class TodoServiceImpl implements TodoListService {
         TodoList todoList = todoRepository.findById(listId).orElse(null);
 
         todoList.update(todoListRequestDto);
-
+        notificationService.sendRealTimeNotification("리스트 업데이트",todoList.getTitle().toString()+"리스트가 수정 되었습니다.");
         return new TodoListResponseDto(todoList);
     }
 

@@ -8,6 +8,7 @@ import com.nbacm.trelldochi.domain.board.repository.BoardQueryDslRepositoryImpl;
 import com.nbacm.trelldochi.domain.board.repository.BoardRepository;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.common.exception.NotFoundException;
+import com.nbacm.trelldochi.domain.notifications.service.NotificationService;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import com.nbacm.trelldochi.domain.user.repository.UserRepository;
 import com.nbacm.trelldochi.domain.workspace.entity.MemberRole;
@@ -34,6 +35,7 @@ public class BoardServiceImpl implements BoardService {
     private final WorkSpaceMemberRepository workSpaceMemberRepository;
     private final BoardQueryDslRepositoryImpl boardQueryDslRepositoryImpl;
     private final AwsS3Service awsS3Service;
+    private final NotificationService notificationService;
 
 
     @Override
@@ -55,6 +57,7 @@ public class BoardServiceImpl implements BoardService {
 
         Board savedBoard = boardRepository.save(board);
 
+        notificationService.sendRealTimeNotification("보드 생성",board.getTitle().toString()+"보드가 생성이 되었어요!");
         return new BoardResponseDto(savedBoard);
     }
 
@@ -95,6 +98,7 @@ public class BoardServiceImpl implements BoardService {
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board Not Found"));
         board.update(boardRequestDto);
+        notificationService.sendRealTimeNotification("보드 수정",board.getTitle().toString()+"보드가 수정이 되었어요!");
 
         return new BoardResponseDto(board);
     }

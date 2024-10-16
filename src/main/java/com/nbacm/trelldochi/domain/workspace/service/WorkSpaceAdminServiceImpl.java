@@ -2,6 +2,7 @@ package com.nbacm.trelldochi.domain.workspace.service;
 
 import com.nbacm.trelldochi.domain.board.repository.BoardRepository;
 import com.nbacm.trelldochi.domain.common.exception.ForbiddenException;
+import com.nbacm.trelldochi.domain.notifications.service.NotificationService;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import com.nbacm.trelldochi.domain.user.entity.UserRole;
 import com.nbacm.trelldochi.domain.user.repository.UserRepository;
@@ -28,6 +29,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     private final WorkSpaceRepository workSpaceRepository;
     private final WorkSpaceMemberRepository workSpaceMemberRepository;
     private final BoardRepository boardRepository;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -45,7 +47,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
         );
 
         WorkSpace savedWorkSpace = workSpaceRepository.save(workSpace);
-
+        notificationService.sendRealTimeNotification("워크 스페이스 생성",workSpace.getName().toString()+"워크 스페이스가 생성 되었습니다.");
         return new WorkSpaceResponseDto(savedWorkSpace);
     }
 
@@ -57,7 +59,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
         isOwner(user.getId(), workSpace.getOwner().getId());
         workSpace.update(requestDto);
         WorkSpace updatedWorkSpace = workSpaceRepository.save(workSpace);
-
+        notificationService.sendRealTimeNotification("워크 스페이스 수정",workSpace.getName().toString()+"워크스페이스가 수정이 되었습니다.");
         return new WorkSpaceResponseDto(updatedWorkSpace);
     }
 
@@ -87,7 +89,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
         );
         workSpaceMember.changeRole(role);
         WorkSpaceMember savedWorkSpaceMember = workSpaceMemberRepository.save(workSpaceMember);
-
+        notificationService.sendRealTimeNotification("멤버 변경","멤버가 변경 되었습니다.");
         return new WorkSpaceMemberResponseDto(workSpaceMember);
     }
 

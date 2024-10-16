@@ -14,6 +14,7 @@ import com.nbacm.trelldochi.domain.comment.repository.CommentRepository;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.list.entity.TodoList;
 import com.nbacm.trelldochi.domain.list.repository.TodoRepository;
+import com.nbacm.trelldochi.domain.notifications.service.NotificationService;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import com.nbacm.trelldochi.domain.user.exception.UserNotFoundException;
 import com.nbacm.trelldochi.domain.user.repository.UserRepository;
@@ -42,6 +43,7 @@ public class CardServiceImpl implements CardService {
     private final CardManagerRepository cardManagerRepository;
     private final UserRepository userRepository;
     private final CardViewService cardViewService;
+    private NotificationService notificationService;
 
     @Override
     @Transactional
@@ -81,7 +83,7 @@ public class CardServiceImpl implements CardService {
 
         // workspace 접근 권한 환인하기
         isAuthInWorkSpace(customUserDetails, workspaceId);
-
+        notificationService.sendRealTimeNotification("카드 변경",findCard.getTitle().toString()+"해당 카드가 변경이 되었어요!");
         return new CardResponseDto(findCard.putCard(cardPatchRequestDto));
 
     }
@@ -142,6 +144,7 @@ public class CardServiceImpl implements CardService {
         Card findCard = findCard(cardId);
 
         Card patchCard = findCard.patchCardState(cardStatus);
+        notificationService.sendRealTimeNotification("카드 상태 변경",findCard.getTitle().toString()+"해당 카드의 상태가 변경이 되었습니다.");
 
         return new CardOneResponseDto(patchCard);
     }
