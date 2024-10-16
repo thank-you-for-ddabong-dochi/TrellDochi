@@ -15,6 +15,8 @@ public class TodoListResponseDto {
     private List<CardSummaryDto> cardList;
     private Long boardId;
 
+    public TodoListResponseDto() {}
+
     public TodoListResponseDto(TodoList todoList) {
         this.title = todoList.getTitle();
         this.listOrder = todoList.getListOrder();

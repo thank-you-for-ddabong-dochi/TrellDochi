@@ -53,7 +53,7 @@ public class BoardServiceImpl implements BoardService {
 
         WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException("Work Space Not Found"));
 
-        List<Board> boardList = workSpace.getBoards();
+        List<Board> boardList = boardRepository.findByWorkspaceIdAndIsDeletedFalse(workspaceId);
 
         return boardList.stream().map(BoardResponseDto::new).toList();
     }
@@ -62,6 +62,10 @@ public class BoardServiceImpl implements BoardService {
     public BoardResponseDto getBoard(Long workspaceId, Long boardId) {
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board Not Found"));
+
+        if(board.getIsDeleted()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
         return new BoardResponseDto(board);
     }

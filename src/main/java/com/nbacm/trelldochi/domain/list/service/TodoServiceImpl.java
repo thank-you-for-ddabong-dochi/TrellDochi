@@ -81,6 +81,10 @@ public class TodoServiceImpl implements TodoListService {
 
         TodoList todoList = todoRepository.findById(todoListId).orElseThrow(() -> new NotFoundException("TodoList not found"));
 
+        if(todoList.getIsDeleted()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
         TodoListResponseDto todoListResponseDto = new TodoListResponseDto(todoList);
 
         List<CardSummaryDto> cardSummaryList = todoList.getCardList()
