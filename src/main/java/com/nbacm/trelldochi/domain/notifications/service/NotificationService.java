@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +27,6 @@ public class NotificationService {
 
 
     public void sendRealTimeNotification(String eventType,String message) {
-
         try {
             // Redis에 알림 발행
             log.info("실시간 알림 전송 중: {} - {}", eventType, message);
