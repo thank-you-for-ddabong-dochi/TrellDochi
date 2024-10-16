@@ -3,6 +3,7 @@ package com.nbacm.trelldochi.domain.card.service;
 import com.nbacm.trelldochi.domain.card.dto.*;
 import com.nbacm.trelldochi.domain.card.entity.Card;
 import com.nbacm.trelldochi.domain.card.entity.CardManager;
+import com.nbacm.trelldochi.domain.card.entity.CardStatus;
 import com.nbacm.trelldochi.domain.card.exception.CardForbiddenException;
 import com.nbacm.trelldochi.domain.card.exception.CardManagerAlreadyExistException;
 import com.nbacm.trelldochi.domain.card.exception.CardNotFoundException;
@@ -63,14 +64,11 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public CardOneResponseDto getCard(Long cardId) {
-        Card findCard = cardRepository.findCardAndCommentsById(cardId).orElseThrow(CardNotFoundException::new);
-        if (findCard.isDeleted()) {
-            throw new CardNotFoundException();
-        }
+
+        Card findCard = findCard(cardId);
 
         cardViewService.incrementCardViewCount(findCard);
 
-        Card findCard = findCard(cardId);
         return new CardOneResponseDto(findCard);
     }
 
