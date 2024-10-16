@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class WorkSpaceServiceImpl implements WorkSpaceService {
+public class    WorkSpaceServiceImpl implements WorkSpaceService {
 
     private final UserRepository userRepository;
     private final WorkSpaceRepository workSpaceRepository;

@@ -13,28 +13,28 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/admin/workspaces")
+@RequestMapping("/api/v1/workspaces")
 public class InvitationController {
 
     private final InvitationServiceImpl invitationService;
 
-    @PostMapping("/{workspaceId}/invitations/{invitationId}/accept")
+    @PostMapping("/{workspaceId}/invitations/accept")
     public ResponseEntity<ApiResponse<String>> accpetInvitation(
             @AuthenticationPrincipal CustomUserDetails authUser,
-            @PathVariable Long invitationId
+            @PathVariable Long workspaceId
     ) {
-        invitationService.acceptInvitation(authUser.getEmail(), invitationId);
+        invitationService.acceptInvitation(authUser.getEmail(), workspaceId);
         return ResponseEntity.ok(ApiResponse.success(
                 "ACCEPT SUCCESS"
         ));
     }
 
-    @PostMapping("/{workspaceId}/invitations/{invitationId}/reject")
+    @PostMapping("/{workspaceId}/invitations/reject")
     public ResponseEntity<ApiResponse<String>> rejectInvitation(
             @AuthenticationPrincipal CustomUserDetails authUser,
-            @PathVariable Long invitationId
+            @PathVariable Long workspaceId
     ) {
-        invitationService.rejectInvitation(authUser.getEmail(), invitationId);
+        invitationService.rejectInvitation(authUser.getEmail(), workspaceId);
         return ResponseEntity.ok(ApiResponse.success(
                 "REJECT SUCCESS"
         ));

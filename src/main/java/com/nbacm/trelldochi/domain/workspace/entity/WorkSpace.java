@@ -6,6 +6,7 @@ import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@SQLRestriction("is_deleted = false")
 @Table(name = "workspace")
 public class WorkSpace {
 
@@ -23,8 +25,8 @@ public class WorkSpace {
     private String description;
     private boolean isDeleted;
 
-    @ManyToOne
-    @JoinColumn(name = "workspace")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User owner;
 
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)

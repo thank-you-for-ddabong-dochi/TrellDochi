@@ -30,7 +30,7 @@ public class WorkSpaceAdminController {
                 ));
     }
 
-    @PatchMapping("/{workspaceId}")
+    @PutMapping("/{workspaceId}")
     public ResponseEntity<ApiResponse<WorkSpaceResponseDto>> updateWorkSpace(
             @AuthenticationPrincipal CustomUserDetails authUser,
             @RequestBody WorkSpaceRequestDto requestDto,
@@ -43,13 +43,13 @@ public class WorkSpaceAdminController {
                 ));
     }
 
-    @DeleteMapping("/{workspaceId}")
+    @PatchMapping("/{workspaceId}")
     public ResponseEntity<ApiResponse<Long>> deleteWorkSpace(
             @AuthenticationPrincipal CustomUserDetails authUser,
-            @RequestBody WorkSpaceRequestDto requestDto,
             @PathVariable Long workspaceId
     ) {
         workSpaceAdminService.deleteWorkSpace(authUser.getEmail(), workspaceId);
+        // 필요시 반환값 추가
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "워크 스페이스 삭제 성공"
