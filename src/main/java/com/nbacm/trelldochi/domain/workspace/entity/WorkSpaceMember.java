@@ -28,8 +28,6 @@ public class WorkSpaceMember {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
-    private boolean isDeleted;
-
     public WorkSpaceMember(User user, WorkSpace workSpace, MemberRole role) {
         this.user = user;
         this.workspace = workSpace;
@@ -39,9 +37,5 @@ public class WorkSpaceMember {
 
     public void changeRole(String role) {
         this.role = MemberRole.valueOf(role);
-    }
-
-    public void delete() {
-        this.isDeleted = true;
     }
 }
