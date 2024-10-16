@@ -25,7 +25,7 @@ public class BoardController {
     @PostMapping("/workspace/{workspaceId}")
     public ResponseEntity<?> createBoard(@PathVariable("workspaceId") Long workspaceId,
                                          @RequestPart(name = "dto") BoardRequestDto boardRequestDto,
-                                         @RequestPart(name = "image") MultipartFile image,
+                                         @RequestPart(name = "image", required = false) MultipartFile image,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         BoardResponseDto boardResponseDto = boardService.createBoard(workspaceId, boardRequestDto, image, userDetails);
@@ -54,7 +54,7 @@ public class BoardController {
     public ResponseEntity<?> updateBoard(@PathVariable("workspaceId") Long workspaceId,
                                          @PathVariable("boardId") Long boardId,
                                          @RequestPart(name = "dto") BoardRequestDto boardRequestDto,
-                                         @RequestPart(name = "image") MultipartFile image,
+                                         @RequestPart(name = "image", required = false) MultipartFile image,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         BoardResponseDto boardResponseDto = boardService.updateBoard(workspaceId, boardId, boardRequestDto, image, userDetails);
