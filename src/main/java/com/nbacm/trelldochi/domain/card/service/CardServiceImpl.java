@@ -65,7 +65,6 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    @Transactional
     public CardOneResponseDto getCard(Long cardId) {
 
         Card findCard = findCard(cardId);

@@ -63,7 +63,6 @@ public class UserServiceImpl implements UserService {
         // JWT 토큰 생성
         String token = jwtUtil.createToken(user.getEmail(),user.getUserRole());
         notificationService.sendRealTimeNotification("로그인 성공","사용자가 로그인 했습니다.");
-
         return token;
     }
 

@@ -9,6 +9,7 @@ import com.nbacm.trelldochi.domain.list.dto.MoveListRequestDto;
 import com.nbacm.trelldochi.domain.list.dto.TodoListRequestDto;
 import com.nbacm.trelldochi.domain.list.dto.TodoListResponseDto;
 import com.nbacm.trelldochi.domain.list.entity.TodoList;
+import com.nbacm.trelldochi.domain.list.repository.TodoListQueryDslRepositoryImpl;
 import com.nbacm.trelldochi.domain.list.repository.TodoRepository;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import com.nbacm.trelldochi.domain.user.repository.UserRepository;
@@ -31,6 +32,7 @@ public class TodoServiceImpl implements TodoListService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final WorkSpaceMemberRepository workSpaceMemberRepository;
+    private final TodoListQueryDslRepositoryImpl todoListQueryDslRepositoryImpl;
 
     @Override
     @Transactional
@@ -121,7 +123,11 @@ public class TodoServiceImpl implements TodoListService {
 
         TodoList todoList = todoRepository.findById(listId).orElseThrow(() -> new NotFoundException("TodoList not found"));
 
-        todoList.delete();
+        if(!todoList.getIsDeleted()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        todoListQueryDslRepositoryImpl.deleteRelations(todoList.getId());
 
         return new TodoListResponseDto(todoList);
     }
