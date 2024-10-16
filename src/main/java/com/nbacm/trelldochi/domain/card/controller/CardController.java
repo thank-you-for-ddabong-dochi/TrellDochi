@@ -63,4 +63,14 @@ public class CardController {
         return ResponseEntity.ok(ApiResponse.success("멤버를 추가했습니다.", cardOneResponseDto));
     }
 
+    @PatchMapping("/bord/todo/cards/{cardId}")
+    public ResponseEntity<ApiResponse<CardOneResponseDto>> patchCardStatus(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable("cardId") Long cardId,
+            @RequestBody CardStatusRequestDto cardStateRequestDto
+    ) {
+        CardOneResponseDto cardOneResponseDto = cardService.patchCardStatus(userDetails, cardId, cardStateRequestDto);
+        return ResponseEntity.ok(ApiResponse.success("상태를 변경했습니다.", cardOneResponseDto));
+    }
+
 }

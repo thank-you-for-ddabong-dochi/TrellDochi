@@ -3,6 +3,7 @@ package com.nbacm.trelldochi.domain.card.service;
 import com.nbacm.trelldochi.domain.card.dto.*;
 import com.nbacm.trelldochi.domain.card.entity.Card;
 import com.nbacm.trelldochi.domain.card.entity.CardManager;
+import com.nbacm.trelldochi.domain.card.entity.CardStatus;
 import com.nbacm.trelldochi.domain.card.exception.CardForbiddenException;
 import com.nbacm.trelldochi.domain.card.exception.CardManagerAlreadyExistException;
 import com.nbacm.trelldochi.domain.card.exception.CardNotFoundException;
@@ -145,6 +146,24 @@ public class CardServiceImpl implements CardService {
         cardManagerRepository.save(new CardManager(addUser, findCard));
 
         return new CardOneResponseDto(findCard);
+    }
+
+    @Override
+    public CardOneResponseDto patchCardStatus(CustomUserDetails userDetails, Long cardId, CardStatusRequestDto cardStateRequestDto) {
+        // 로그인 한 유저의 id 찾기
+        User findUser = userRepository.findByEmailOrElseThrow(userDetails.getEmail());
+
+        // 카드 담당자인지 찾습니다.
+        CardManager findCardManager = cardRepository.findUserInUserList(cardId, findUser.getId()).orElseThrow(CardForbiddenException::new);
+
+        // card status가 맞는지 확인하기
+        CardStatus cardStatus = CardStatus.of(cardStateRequestDto.getStatus());
+
+        Card findCard = cardRepository.findById(cardId).orElseThrow(CardNotFoundException::new);
+
+        Card patchCard = findCard.patchCardState(cardStatus);
+
+        return new CardOneResponseDto(patchCard);
     }
 }
 

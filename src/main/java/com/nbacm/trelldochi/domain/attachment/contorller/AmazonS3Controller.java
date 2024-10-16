@@ -5,6 +5,7 @@ import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,13 +19,13 @@ public class AmazonS3Controller {
 
     private final AwsS3Service awsS3Service;
 
-    @PostMapping("/s3/upload")
-    public ResponseEntity<?> s3Upload(@RequestPart(value = "image", required = false) MultipartFile image){
-        String profileImage = awsS3Service.upload(image);
+    @PostMapping(value = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> s3Upload(@RequestPart(name = "image", required = false) MultipartFile multipartFile){
+        String profileImage = awsS3Service.upload(multipartFile);
         return ResponseEntity.ok(profileImage);
     }
 
-    @GetMapping("/s3/delete")
+    @GetMapping("/delete")
     public ResponseEntity<?> s3delete(@RequestParam String addr){
         awsS3Service.deleteImageFromS3(addr);
         return ResponseEntity.ok(null);

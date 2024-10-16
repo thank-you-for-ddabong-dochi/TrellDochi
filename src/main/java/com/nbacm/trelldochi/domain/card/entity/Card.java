@@ -80,4 +80,9 @@ public class Card {
     public void deleteCard() {
         isDeleted = true;
     }
+
+    public Card patchCardState(CardStatus cardStatus) {
+        this.status = cardStatus;
+        return this;
+    }
 }
