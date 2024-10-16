@@ -42,14 +42,8 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public CardResponseDto createCard(CustomUserDetails customUserDetails, Long workspaceId, Long todoListId, CardRequestDto cardRequestDto) {
-        // 워크 스페이스에 권한이 없는 경우(추가가 안된 경우)
-        WorkSpaceMember findWorkSpaceMember = workSpaceRepository.findByUserEmailAndWorkspaceId(customUserDetails.getEmail(), workspaceId)
-                .orElseThrow(() -> new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다."));
-
-        // 권한이 readonly인 경우 생성 불가
-        if (findWorkSpaceMember.getRole() == MemberRole.READONLY) {
-            throw new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다.");
-        }
+        // workspace 접근 권한 환인하기
+        isAuthInWorkSpace(customUserDetails, workspaceId);
 
         // 어떤 리스트 아래에 있는 카드인지 찾기
         TodoList findTodoList = todoRepository.findById(todoListId).orElseThrow();
@@ -76,26 +70,17 @@ public class CardServiceImpl implements CardService {
 
         cardViewService.incrementCardViewCount(findCard);
 
+        Card findCard = findCard(cardId);
         return new CardOneResponseDto(findCard);
     }
 
     @Override
     @Transactional
     public CardResponseDto putCard(CustomUserDetails customUserDetails, Long workspaceId, Long cardId, CardPatchRequestDto cardPatchRequestDto) {
-        Card findCard = cardRepository.findById(cardId).orElseThrow(CardNotFoundException::new);
+        Card findCard = findCard(cardId);
 
-        // 워크 스페이스에 권한이 없는 경우(추가가 안된 경우)
-        WorkSpaceMember findWorkSpaceMember = workSpaceRepository.findByUserEmailAndWorkspaceId(customUserDetails.getEmail(), workspaceId)
-                .orElseThrow(() -> new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다."));
-
-        // 권한이 readonly인 경우 생성 불가
-        if (findWorkSpaceMember.getRole() == MemberRole.READONLY) {
-            throw new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다.");
-        }
-
-        if (findCard.isDeleted()) {
-            throw new CardNotFoundException();
-        }
+        // workspace 접근 권한 환인하기
+        isAuthInWorkSpace(customUserDetails, workspaceId);
 
         return new CardResponseDto(findCard.putCard(cardPatchRequestDto));
 
@@ -104,20 +89,10 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public void deleteCard(CustomUserDetails customUserDetails, Long workspaceId, Long cardId) {
-        Card findCard = cardRepository.findCardAndCommentsById(cardId).orElseThrow(CardNotFoundException::new);
+        Card findCard = findCard(cardId);
 
-        if (findCard.isDeleted()) {
-            throw new CardNotFoundException();
-        }
-
-        // 워크 스페이스에 권한이 없는 경우(추가가 안된 경우)
-        WorkSpaceMember findWorkSpaceMember = workSpaceRepository.findByUserEmailAndWorkspaceId(customUserDetails.getEmail(), workspaceId)
-                .orElseThrow(() -> new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다."));
-
-        // 권한이 readonly인 경우 생성 불가
-        if (findWorkSpaceMember.getRole() == MemberRole.READONLY) {
-            throw new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다.");
-        }
+        // workspace 접근 권한 환인하기
+        isAuthInWorkSpace(customUserDetails, workspaceId);
 
         for (Comment comment : findCard.getCommentList()) {
             comment.deleteComment();
@@ -145,12 +120,52 @@ public class CardServiceImpl implements CardService {
         // 추가할 사람 찾기
         User addUser = userRepository.findById(cardManagerRequestDto.getUserId()).orElseThrow(() -> new UserNotFoundException("유저를 찾을 수 없습니다"));
 
-        Card findCard = cardRepository.findById(cardId).orElseThrow(CardNotFoundException::new);
+        Card findCard = findCard(cardId);;
 
         cardManagerRepository.save(new CardManager(addUser, findCard));
 
         return new CardOneResponseDto(findCard);
     }
 
+    @Override
+    @Transactional
+    public CardOneResponseDto patchCardStatus(CustomUserDetails userDetails, Long cardId, CardStatusRequestDto cardStateRequestDto) {
+        // 로그인 한 유저의 id 찾기
+        User findUser = userRepository.findByEmailOrElseThrow(userDetails.getEmail());
+
+        // 카드 담당자인지 찾습니다.
+        CardManager findCardManager = cardRepository.findUserInUserList(cardId, findUser.getId()).orElseThrow(CardForbiddenException::new);
+
+        // card status가 맞는지 확인하기
+        CardStatus cardStatus = CardStatus.of(cardStateRequestDto.getStatus());
+
+        Card findCard = findCard(cardId);
+
+        Card patchCard = findCard.patchCardState(cardStatus);
+
+        return new CardOneResponseDto(patchCard);
+    }
+
+    private WorkSpaceMember isAuthInWorkSpace(CustomUserDetails customUserDetails, Long workspaceId){
+        // 워크 스페이스에 권한이 없는 경우(추가가 안된 경우)
+        WorkSpaceMember findWorkSpaceMember = workSpaceRepository.findByUserEmailAndWorkspaceId(customUserDetails.getEmail(), workspaceId)
+                .orElseThrow(() -> new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다."));
+
+        // 권한이 readonly인 경우 생성 불가
+        if (findWorkSpaceMember.getRole() == MemberRole.READONLY) {
+            throw new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다.");
+        }
+
+        return findWorkSpaceMember;
+    }
+
+    private Card findCard(Long cardId) {
+        Card findCard = cardRepository.findCardAndCommentsById(cardId).orElseThrow(CardNotFoundException::new);
+
+        if (findCard.isDeleted()) {
+            throw new CardNotFoundException();
+        }
+        return findCard;
+    }
 }
 

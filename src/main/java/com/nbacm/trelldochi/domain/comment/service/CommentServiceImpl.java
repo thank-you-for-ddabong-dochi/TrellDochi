@@ -32,10 +32,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentResponseDto putComment(CustomUserDetails customUserDetails, Long commentId, CommentRequestDto commentRequestDto) {
-        Comment findComment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
-        if (findComment.isDeleted()) {
-            throw new CommentNotFoundException();
-        }
+        Comment findComment = isDeleted(commentId);
 
         if (customUserDetails.getEmail().equals(findComment.getUserEmail())) {
             Comment patchComment = findComment.putComment(commentRequestDto);
@@ -48,10 +45,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(CustomUserDetails customUserDetails, Long commentId) {
-        Comment findComment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
-        if (findComment.isDeleted()) {
-            throw new CommentNotFoundException();
-        }
+        Comment findComment = isDeleted(commentId);
 
         if (customUserDetails.getEmail().equals(findComment.getUserEmail())) {
             findComment.deleteComment();
@@ -59,5 +53,13 @@ public class CommentServiceImpl implements CommentService {
             throw new CommentNotFoundException();
         }
 
+    }
+
+    private Comment isDeleted(Long commentId){
+        Comment findComment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+        if (findComment.isDeleted()) {
+            throw new CommentNotFoundException();
+        }
+        return findComment;
     }
 }
