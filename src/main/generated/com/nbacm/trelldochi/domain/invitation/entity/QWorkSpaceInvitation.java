@@ -25,6 +25,8 @@ public class QWorkSpaceInvitation extends EntityPathBase<WorkSpaceInvitation> {
 
     public final NumberPath<Long> requestUserId = createNumber("requestUserId", Long.class);
 
+    public final EnumPath<com.nbacm.trelldochi.domain.workspace.entity.MemberRole> role = createEnum("role", com.nbacm.trelldochi.domain.workspace.entity.MemberRole.class);
+
     public final EnumPath<com.nbacm.trelldochi.domain.invitation.enums.INVITATION_STATUS> status = createEnum("status", com.nbacm.trelldochi.domain.invitation.enums.INVITATION_STATUS.class);
 
     public final NumberPath<Long> workspaceId = createNumber("workspaceId", Long.class);

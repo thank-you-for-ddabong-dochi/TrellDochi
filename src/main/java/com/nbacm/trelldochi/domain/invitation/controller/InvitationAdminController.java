@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class InvitationAdminController {
 
     private final InvitationAdminServiceImpl invitationAdminService;
+
     @PostMapping("/{workspaceId}/invitations")
     public ResponseEntity<ApiResponse<InvitationResponseDto>> inviteMember(
             @AuthenticationPrincipal CustomUserDetails authUser,
@@ -33,12 +34,13 @@ public class InvitationAdminController {
         );
     }
 
-    @PostMapping("/{workspaceId}/invitations/{invitationId}/cancle")
+    @PostMapping("/{workspaceId}/invitations/cancle")
     public ResponseEntity<ApiResponse<String>> cancleInvitation(
             @AuthenticationPrincipal CustomUserDetails authUser,
-            @PathVariable Long invitationId
+            @PathVariable Long workspaceId,
+            @RequestBody InvitationRequestDto requestDto
     ) {
-        invitationAdminService.cancleInvitation(authUser.getEmail(), invitationId);
+        invitationAdminService.cancleInvitation(authUser.getEmail(), workspaceId, requestDto);
         return ResponseEntity.ok(ApiResponse.success(
                 "CANCLE SUCCESS"
         ));

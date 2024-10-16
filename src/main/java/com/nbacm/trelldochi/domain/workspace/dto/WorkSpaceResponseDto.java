@@ -1,5 +1,6 @@
 package com.nbacm.trelldochi.domain.workspace.dto;
 
+import com.nbacm.trelldochi.domain.board.entity.Board;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpace;
 import lombok.Getter;
 
@@ -16,9 +17,12 @@ public class WorkSpaceResponseDto {
         this.id = workSpace.getId();
         this.name = workSpace.getName();
         this.description = workSpace.getDescription();
-        this.boards = workSpace.getBoards().stream().map(board ->
-                new WorkSpaceBoardResponseDto(
-                        board.getId(),
-                        board.getTitle())).toList();
+        List<Board> board = workSpace.getBoards();
+        if (board != null) {
+            this.boards = board.stream().map(b ->
+                    new WorkSpaceBoardResponseDto(
+                            b.getId(),
+                            b.getTitle())).toList();
+        }
     }
 }

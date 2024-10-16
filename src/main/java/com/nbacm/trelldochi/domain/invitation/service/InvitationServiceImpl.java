@@ -19,27 +19,27 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     @Transactional
-    public void acceptInvitation(String email, Long invitationId) {
+    public void acceptInvitation(String email, Long workspaceId) {
         User user = userRepository.findByEmailOrElseThrow(email);
-        WorkSpaceInvitation workSpaceInvitation = invitationRepository.findById(invitationId).orElseThrow(
+        WorkSpaceInvitation workSpaceInvitation = invitationRepository.findByWorkspaceIdAndReceivedUserId(workspaceId,user.getId()).orElseThrow(
                 () -> new InvitationNotFoundException("초대 만료")
         );
         if (!user.getId().equals(workSpaceInvitation.getReceivedUserId())) {
             throw new InvitationPermissionException("접근 권한이 없습니다.");
         }
-        workSpaceInvitation.changeStatus(INVITATION_STATUS.ACCEPTED);
+        workSpaceInvitation.changeStatus(workSpaceInvitation.getStatus(),INVITATION_STATUS.ACCEPTED);
     }
 
     @Override
     @Transactional
-    public void rejectInvitation(String email, Long invitationId) {
+    public void rejectInvitation(String email, Long workspaceId) {
         User user = userRepository.findByEmailOrElseThrow(email);
-        WorkSpaceInvitation workSpaceInvitation = invitationRepository.findById(invitationId).orElseThrow(
+        WorkSpaceInvitation workSpaceInvitation = invitationRepository.findByWorkspaceIdAndReceivedUserId(workspaceId,user.getId()).orElseThrow(
                 () -> new InvitationNotFoundException("초대 만료")
         );
         if (!user.getId().equals(workSpaceInvitation.getReceivedUserId())) {
             throw new InvitationPermissionException("접근 권한이 없습니다.");
         }
-        workSpaceInvitation.changeStatus(INVITATION_STATUS.REJECTED);
+        workSpaceInvitation.changeStatus(workSpaceInvitation.getStatus(), INVITATION_STATUS.REJECTED);
     }
 }

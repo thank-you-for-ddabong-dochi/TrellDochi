@@ -26,7 +26,7 @@ public class WorkSpace {
     private boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workspace")
+    @JoinColumn(name = "user_id")
     private User owner;
 
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
