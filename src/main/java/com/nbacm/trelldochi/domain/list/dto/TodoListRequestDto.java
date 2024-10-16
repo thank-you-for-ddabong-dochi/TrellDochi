@@ -13,6 +13,8 @@ public class TodoListRequestDto {
     private List<Card> cardList;
     private Long boardId;
 
+    public TodoListRequestDto() {}
+
     public TodoListRequestDto(String title, int listOrder, List<Card> cardList, Long boardId) {
         this.title = title;
         this.listOrder = listOrder;

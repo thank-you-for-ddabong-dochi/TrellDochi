@@ -15,6 +15,9 @@ public class BoardResponseDto {
     private List<TodoList> todoLists;
     private Long workspaceId;
 
+    public BoardResponseDto() {
+    }
+
     public BoardResponseDto(Board board) {
         this.title = board.getTitle();
         this.contents = board.getContents();

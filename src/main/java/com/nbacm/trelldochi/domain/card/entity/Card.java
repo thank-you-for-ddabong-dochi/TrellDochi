@@ -37,6 +37,9 @@ public class Card {
     @Enumerated(EnumType.STRING)
     private CardStatus status;
 
+    @Column
+    private int viewCount;
+
     @Column(nullable = false)
     private boolean isDeleted = false;
 
@@ -68,6 +71,10 @@ public class Card {
         deadline = cardPatchRequestDto.getDeadline() == null ? deadline : cardPatchRequestDto.getDeadline();
         status = cardPatchRequestDto.getCardStatus() == null ? status : cardPatchRequestDto.getCardStatus();
         return this;
+    }
+
+    public void addViewCount(int viewCount) {
+        this.viewCount = viewCount;
     }
 
     public void deleteCard() {

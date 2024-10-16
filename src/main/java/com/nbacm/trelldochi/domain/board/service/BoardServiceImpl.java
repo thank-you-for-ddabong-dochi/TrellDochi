@@ -5,6 +5,7 @@ import com.nbacm.trelldochi.domain.board.dto.BoardResponseDto;
 import com.nbacm.trelldochi.domain.board.entity.Board;
 import com.nbacm.trelldochi.domain.board.repository.BoardRepository;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
+import com.nbacm.trelldochi.domain.common.exception.NotFoundException;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import com.nbacm.trelldochi.domain.user.repository.UserRepository;
 import com.nbacm.trelldochi.domain.workspace.entity.MemberRole;
@@ -38,7 +39,7 @@ public class BoardServiceImpl implements BoardService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow();
+        WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException("Work Space Not Found"));
 
         Board board = new Board(boardRequestDto.getTitle(), boardRequestDto.getContents(), workSpace);
 
@@ -50,9 +51,9 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<BoardResponseDto> getAllBoard(Long workspaceId) {
 
-        WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow();
+        WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException("Work Space Not Found"));
 
-        List<Board> boardList = workSpace.getBoards();
+        List<Board> boardList = boardRepository.findByWorkspaceIdAndIsDeletedFalse(workspaceId);
 
         return boardList.stream().map(BoardResponseDto::new).toList();
     }
@@ -60,7 +61,11 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardResponseDto getBoard(Long workspaceId, Long boardId) {
 
-        Board board = boardRepository.findById(boardId).orElseThrow();
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board Not Found"));
+
+        if(board.getIsDeleted()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
         return new BoardResponseDto(board);
     }
@@ -73,7 +78,7 @@ public class BoardServiceImpl implements BoardService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        Board board = boardRepository.findById(boardId).orElseThrow();
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board Not Found"));
         board.update(boardRequestDto);
 
         return new BoardResponseDto(board);
@@ -87,7 +92,7 @@ public class BoardServiceImpl implements BoardService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        Board board = boardRepository.findById(boardId).orElseThrow();
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board Not Found"));
         board.delete();
 
         return new BoardResponseDto(board);
@@ -96,7 +101,7 @@ public class BoardServiceImpl implements BoardService {
     private Boolean isAuthorized(Long workspaceId, CustomUserDetails userDetails) {
         User user = userRepository.findByEmailOrElseThrow(userDetails.getEmail());
 
-        WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(user.getId(), workspaceId).orElseThrow();
+        WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(user.getId(), workspaceId).orElseThrow(() -> new NotFoundException("Work Space Member Not Found"));
 
         if(workSpaceMember.getRole() == MemberRole.READONLY) {
             return false;

@@ -4,6 +4,7 @@ import com.nbacm.trelldochi.domain.board.entity.Board;
 import com.nbacm.trelldochi.domain.board.repository.BoardRepository;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.common.exception.NotFoundException;
+import com.nbacm.trelldochi.domain.list.dto.CardSummaryDto;
 import com.nbacm.trelldochi.domain.list.dto.MoveListRequestDto;
 import com.nbacm.trelldochi.domain.list.dto.TodoListRequestDto;
 import com.nbacm.trelldochi.domain.list.dto.TodoListResponseDto;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TodoServiceImpl implements TodoListService {
@@ -34,7 +37,7 @@ public class TodoServiceImpl implements TodoListService {
     public TodoListResponseDto createTodoList(Long boardId, TodoListRequestDto todoListRequestDto, CustomUserDetails userDetails) {
 
         // 현재 로그인 중인 유저가 해당 워크스페이스의 맴버인지 판단이 필요함
-        Board board = boardRepository.findById(boardId).orElseThrow();
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board not found"));
 
         if(!isAuthorized(board.getWorkSpace().getId(), userDetails)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -49,14 +52,17 @@ public class TodoServiceImpl implements TodoListService {
         return new TodoListResponseDto(savedTodoList);
     }
 
+
+
     @Override
     @Transactional
     public void moveTodoList(MoveListRequestDto moveListRequestDto) {
 
-        TodoList todoList = todoRepository.findById(moveListRequestDto.getTodoListId()).orElseThrow();
+        TodoList todoList = todoRepository.findById(moveListRequestDto.getTodoListId()).orElseThrow(() -> new NotFoundException("TodoList not found"));
         int currentOrder = todoList.getListOrder();
         int targetOrder = moveListRequestDto.getTargetOrder();
 
+        // 별도의 메서드로 분리!!!
         // 리스트를 뒤쪽으로 이동시킬 때
         if(currentOrder < targetOrder) {
             todoRepository.decrementOrderBetween(currentOrder+1, targetOrder);
@@ -70,13 +76,34 @@ public class TodoServiceImpl implements TodoListService {
         todoRepository.save(todoList);
     }
 
+    @Override
+    public TodoListResponseDto getTodoList(Long boardId, Long todoListId) {
+
+        TodoList todoList = todoRepository.findById(todoListId).orElseThrow(() -> new NotFoundException("TodoList not found"));
+
+        if(todoList.getIsDeleted()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        TodoListResponseDto todoListResponseDto = new TodoListResponseDto(todoList);
+
+        List<CardSummaryDto> cardSummaryList = todoList.getCardList()
+                .stream()
+                .map(card -> new CardSummaryDto(card.getTitle(), card.getCommentList().size()))
+                .toList();
+
+        todoListResponseDto.addCardList(cardSummaryList);
+
+        return todoListResponseDto;
+    }
+
 
     @Override
     @Transactional
     public TodoListResponseDto updateTodoList(Long boardId, Long listId, TodoListRequestDto todoListRequestDto, CustomUserDetails userDetails) {
 
         // 현재 로그인 중인 유저가 해당 워크스페이스의 맴버인지 판단이 필요함
-        Board board = boardRepository.findById(boardId).orElseThrow();
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board not found"));
 
         if(!isAuthorized(board.getWorkSpace().getId(), userDetails)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -93,13 +120,13 @@ public class TodoServiceImpl implements TodoListService {
     public TodoListResponseDto deleteTodoList(Long boardId, Long listId, CustomUserDetails userDetails) {
 
         // 현재 로그인 중인 유저가 해당 워크스페이스의 맴버인지 판단이 필요함
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(""));
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board not found"));
 
         if(!isAuthorized(board.getWorkSpace().getId(), userDetails)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        TodoList todoList = todoRepository.findById(listId).orElseThrow(() -> new NotFoundException(""));
+        TodoList todoList = todoRepository.findById(listId).orElseThrow(() -> new NotFoundException("TodoList not found"));
 
         todoList.delete();
 
@@ -110,7 +137,7 @@ public class TodoServiceImpl implements TodoListService {
     private Boolean isAuthorized(Long workspaceId, CustomUserDetails userDetails) {
         User user = userRepository.findByEmailOrElseThrow(userDetails.getEmail());
 
-        WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(user.getId(), workspaceId).orElseThrow();
+        WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(user.getId(), workspaceId).orElseThrow(() -> new NotFoundException("Work Space Member not found"));
 
         if(workSpaceMember.getRole() == MemberRole.READONLY) {
             return false;

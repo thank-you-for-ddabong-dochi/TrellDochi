@@ -22,7 +22,7 @@ public class BoardController {
 
     // 보드 생성
     @PostMapping("/workspace/{workspaceId}")
-    public ResponseEntity<?> createBoard(@PathVariable Long workspaceId,
+    public ResponseEntity<?> createBoard(@PathVariable("workspaceId") Long workspaceId,
                                          @RequestBody BoardRequestDto boardRequestDto,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 
