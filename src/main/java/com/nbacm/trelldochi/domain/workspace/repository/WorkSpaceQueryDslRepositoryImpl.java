@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.nbacm.trelldochi.domain.board.entity.QBoard.board;
+import static com.nbacm.trelldochi.domain.card.entity.QCard.card;
+import static com.nbacm.trelldochi.domain.list.entity.QTodoList.todoList;
 import static com.nbacm.trelldochi.domain.workspace.entity.QWorkSpace.workSpace;
 import static com.nbacm.trelldochi.domain.workspace.entity.QWorkSpaceMember.workSpaceMember;
 
@@ -61,6 +63,21 @@ public class WorkSpaceQueryDslRepositoryImpl implements WorkSpaceQueryDslReposit
                 .set(board.isDeleted, true)
                 .execute();
 
+        // todoList softDelete
+        queryFactory.update(todoList)
+                .set(todoList.isDeleted, true)
+                .where(
+                        todoList.id.eq(todoList.id)
+                )
+                .execute();
+
+        // card softDelete
+        queryFactory.update(card)
+                .set(card.isDeleted, true)
+                .where(
+                        card.todolist.id.eq(todoList.id)
+                )
+                .execute();
         entityManager.flush();
         entityManager.clear();
     }
