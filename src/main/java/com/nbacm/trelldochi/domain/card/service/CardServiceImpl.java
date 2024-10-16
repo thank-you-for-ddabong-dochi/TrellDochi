@@ -22,9 +22,12 @@ import com.nbacm.trelldochi.domain.workspace.entity.WorkSpaceMember;
 import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceAccessDeniedException;
 import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -142,6 +145,11 @@ public class CardServiceImpl implements CardService {
         Card patchCard = findCard.patchCardState(cardStatus);
 
         return new CardOneResponseDto(patchCard);
+    }
+
+    @Override
+    public Page<Card> searchCards(String title, String explanation, LocalDate deadline, String managerName, Long boardId, Pageable pageable) {
+        return cardRepository.searchCards(title, explanation, deadline, managerName, boardId, pageable);
     }
 
     private WorkSpaceMember isAuthInWorkSpace(CustomUserDetails customUserDetails, Long workspaceId){

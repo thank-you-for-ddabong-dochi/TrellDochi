@@ -19,8 +19,12 @@ import com.nbacm.trelldochi.domain.workspace.entity.WorkSpaceMember;
 import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceAccessDeniedException;
 import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Service
 public interface CardService {
@@ -36,4 +40,7 @@ public interface CardService {
     CardOneResponseDto addManager(CustomUserDetails userDetails, Long cardId, CardManagerRequestDto cardManagerRequestDto);
 
     CardOneResponseDto patchCardStatus(CustomUserDetails userDetails, Long cardId, CardStatusRequestDto cardStateRequestDto);
+
+    Page<Card> searchCards(String title, String explanation, LocalDate deadline, String managerName, Long boardId, Pageable pageable);
+
 }
