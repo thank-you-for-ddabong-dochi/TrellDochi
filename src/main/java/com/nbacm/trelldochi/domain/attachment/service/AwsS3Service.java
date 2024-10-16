@@ -1,20 +1,28 @@
 package com.nbacm.trelldochi.domain.attachment.service;
 
-import ch.qos.logback.core.spi.ErrorCodes;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
+import com.nbacm.trelldochi.domain.attachment.dto.AttachmentRequestDto;
+import com.nbacm.trelldochi.domain.attachment.entity.Attachment;
+import com.nbacm.trelldochi.domain.attachment.exception.AttachmentNotFoundException;
+import com.nbacm.trelldochi.domain.attachment.repository.AttachmentRepository;
+import com.nbacm.trelldochi.domain.card.entity.Card;
+import com.nbacm.trelldochi.domain.card.entity.CardManager;
+import com.nbacm.trelldochi.domain.card.exception.CardForbiddenException;
+import com.nbacm.trelldochi.domain.card.exception.CardNotFoundException;
+import com.nbacm.trelldochi.domain.card.repository.CardRepository;
+import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
+import com.nbacm.trelldochi.domain.user.entity.User;
+import com.nbacm.trelldochi.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.integration.IntegrationProperties;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
-import javax.lang.model.type.ErrorType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,15 +38,29 @@ import java.util.*;
 public class AwsS3Service {
 
     private final AmazonS3 amazonS3;
+    private final CardRepository cardRepository;
+    private final UserRepository userRepository;
+    private final AttachmentRepository attachmentRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public String upload(MultipartFile image) {
+    @Transactional
+    public String upload(CustomUserDetails userDetails, Long cardId, MultipartFile image, AttachmentRequestDto attachmentRequestDto) {
+        // 권한 확인 후 card 찾기
+        Card findCard = findCard(userDetails, cardId);
+
+        // 이미지 파일이 없는 경우 오류
         if(image.isEmpty() || Objects.isNull(image.getOriginalFilename())){
             throw new AmazonS3Exception("not found image");
         }
-        return this.uploadImage(image);
+
+        // 이미지 저장하기
+        String url = this.uploadImage(image);
+        // attachment에 저장하기
+        attachmentRepository.save(new Attachment(attachmentRequestDto.getFileName(), url, findCard));
+
+        return url;
     }
 
     private String uploadImage(MultipartFile image) {
@@ -93,13 +115,20 @@ public class AwsS3Service {
         return amazonS3.getUrl(bucketName, s3FileName).toString();
     }
 
-    public void deleteImageFromS3(String imageAddress){
-        String key = getKeyFromImageAddress(imageAddress);
+    public void deleteImageFromS3(CustomUserDetails userDetails, Long cardId, Long attachmentId){
+        // 권한 확인
+        findCard(userDetails, cardId);
+
+        Attachment findAttachment = attachmentRepository.findById(attachmentId).orElseThrow(AttachmentNotFoundException::new);
+
+        String key = getKeyFromImageAddress(findAttachment.getUrl());
         try{
             amazonS3.deleteObject(new DeleteObjectRequest(bucketName, key));
         }catch (Exception e){
             throw new AmazonS3Exception("삭제하지 못했습니다.");
         }
+
+        attachmentRepository.deleteById(attachmentId);
     }
 
     private String getKeyFromImageAddress(String imageAddress){
@@ -110,6 +139,21 @@ public class AwsS3Service {
         }catch (MalformedURLException | UnsupportedEncodingException e){
             throw new AmazonS3Exception("이미지가 없습니다.");
         }
+    }
+
+    private Card findCard(CustomUserDetails userDetails, Long cardId){
+        // 카드 찾기
+        Card findCard = cardRepository.findCardAndCommentsById(cardId).orElseThrow(CardNotFoundException::new);
+
+        if (findCard.isDeleted()) {
+            throw new CardNotFoundException();
+        }
+
+        // 카드 담당자인지 찾습니다.
+        User findUser = userRepository.findByEmailOrElseThrow(userDetails.getEmail());
+        CardManager findCardManager = cardRepository.findUserInUserList(cardId, findUser.getId()).orElseThrow(CardForbiddenException::new);
+
+        return findCard;
     }
 }
 

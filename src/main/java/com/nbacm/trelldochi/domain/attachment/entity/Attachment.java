@@ -25,4 +25,9 @@ public class Attachment {
     @JoinColumn(name = "card_id")
     private Card card;
 
+    public Attachment(String fileName, String url, Card findCard) {
+        this.fileName = fileName;
+        this.url = url;
+        this.card = findCard;
+    }
 }
