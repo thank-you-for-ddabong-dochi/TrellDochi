@@ -52,6 +52,7 @@ public class Card {
 
     @BatchSize(size = 10)
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<CardManager> managerList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

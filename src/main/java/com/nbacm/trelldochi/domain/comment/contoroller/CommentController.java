@@ -1,10 +1,9 @@
 package com.nbacm.trelldochi.domain.comment.contoroller;
 
-import com.nbacm.trelldochi.domain.comment.dot.CommentRequestDto;
+import com.nbacm.trelldochi.domain.comment.dto.CommentRequestDto;
 import com.nbacm.trelldochi.domain.comment.dto.CommentResponseDto;
 import com.nbacm.trelldochi.domain.comment.service.CommentService;
 import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
-import com.nbacm.trelldochi.domain.common.dto.AuthUser;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

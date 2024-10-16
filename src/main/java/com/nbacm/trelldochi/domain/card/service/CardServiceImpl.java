@@ -43,7 +43,7 @@ public class CardServiceImpl implements CardService {
     private final CardManagerRepository cardManagerRepository;
     private final UserRepository userRepository;
     private final CardViewService cardViewService;
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional

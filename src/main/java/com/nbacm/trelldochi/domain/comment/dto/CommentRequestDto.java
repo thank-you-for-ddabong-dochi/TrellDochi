@@ -1,4 +1,4 @@
-package com.nbacm.trelldochi.domain.comment.dot;
+package com.nbacm.trelldochi.domain.comment.dto;
 
 import lombok.Getter;
 

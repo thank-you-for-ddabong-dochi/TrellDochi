@@ -20,10 +20,10 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class CardViewService {
 
-    @Autowired
+
     private final RedisTemplate<String, Object> redisTemplate;
-    @Autowired
-    private CardRepository cardRepository;
+
+    private final CardRepository cardRepository;
 
     private static final String VIEW_COUNT_KEY = "card:viewCount:";
     private static final String RANKING_KEY = "card:ranking";

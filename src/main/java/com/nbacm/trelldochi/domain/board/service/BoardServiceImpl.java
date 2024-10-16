@@ -36,7 +36,6 @@ public class BoardServiceImpl implements BoardService {
     private final BoardQueryDslRepositoryImpl boardQueryDslRepositoryImpl;
     private final AwsS3Service awsS3Service;
     private final NotificationService notificationService;
-    private final BoardRepositoryImpl boardRepositoryImpl;
 
 
     @Override
