@@ -103,8 +103,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
         );
         isOwner(memberId, workSpace.getOwner().getId());
 
-        workSpaceMember.delete();
-        workSpaceMemberRepository.save(workSpaceMember);
+        workSpaceMemberRepository.delete(workSpaceMember);
     }
 
     private void validatePermission(String email, Long workspaceId) {
@@ -121,7 +120,6 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     private void isOwner(Long userid, Long ownerId) {
         if (!ownerId.equals(userid)) {
             throw new WorkSpaceAccessDeniedException("워크 스페이스 소유자가 아닙니다.");
-        }
-        ;
+        };
     }
 }
