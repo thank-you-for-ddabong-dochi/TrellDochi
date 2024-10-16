@@ -3,6 +3,7 @@ package com.nbacm.trelldochi.domain.board.service;
 import com.nbacm.trelldochi.domain.board.dto.BoardRequestDto;
 import com.nbacm.trelldochi.domain.board.dto.BoardResponseDto;
 import com.nbacm.trelldochi.domain.board.entity.Board;
+import com.nbacm.trelldochi.domain.board.repository.BoardQueryDslRepositoryImpl;
 import com.nbacm.trelldochi.domain.board.repository.BoardRepository;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.common.exception.NotFoundException;
@@ -29,6 +30,7 @@ public class BoardServiceImpl implements BoardService {
     private final WorkSpaceRepository workSpaceRepository;
     private final UserRepository userRepository;
     private final WorkSpaceMemberRepository workSpaceMemberRepository;
+    private final BoardQueryDslRepositoryImpl boardQueryDslRepositoryImpl;
 
 
     @Override
@@ -97,10 +99,12 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board Not Found"));
+
         if(board.getIsDeleted()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        board.delete();
+
+        boardQueryDslRepositoryImpl.deleteRelations(board.getId());
 
         return new BoardResponseDto(board);
     }

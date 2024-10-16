@@ -123,7 +123,9 @@ public class TodoServiceImpl implements TodoListService {
 
         TodoList todoList = todoRepository.findById(listId).orElseThrow(() -> new NotFoundException("TodoList not found"));
 
-        todoList.delete();
+        if(!todoList.getIsDeleted()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
         todoListQueryDslRepositoryImpl.deleteRelations(todoList.getId());
 
