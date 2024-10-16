@@ -1,7 +1,7 @@
 package com.nbacm.trelldochi.domain.workspace.controller;
 
 import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
-import com.nbacm.trelldochi.domain.common.dto.AuthUser;
+import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceMemberResponseDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceRequestDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceResponseDto;
@@ -19,7 +19,10 @@ public class WorkSpaceAdminController {
     private final WorkSpaceAdminServiceImpl workSpaceAdminService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<WorkSpaceResponseDto>> createWorkSpace(@AuthenticationPrincipal AuthUser authUser, WorkSpaceRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<WorkSpaceResponseDto>> createWorkSpace(
+            @AuthenticationPrincipal CustomUserDetails authUser,
+            @RequestBody WorkSpaceRequestDto requestDto
+    ) {
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "워크 스페이스 생성 성공",
@@ -29,8 +32,8 @@ public class WorkSpaceAdminController {
 
     @PatchMapping("/{workspaceId}")
     public ResponseEntity<ApiResponse<WorkSpaceResponseDto>> updateWorkSpace(
-            @AuthenticationPrincipal AuthUser authUser,
-            WorkSpaceRequestDto requestDto,
+            @AuthenticationPrincipal CustomUserDetails authUser,
+            @RequestBody WorkSpaceRequestDto requestDto,
             @PathVariable Long workspaceId
     ) {
         return ResponseEntity.ok(
@@ -42,8 +45,8 @@ public class WorkSpaceAdminController {
 
     @DeleteMapping("/{workspaceId}")
     public ResponseEntity<ApiResponse<Long>> deleteWorkSpace(
-            @AuthenticationPrincipal AuthUser authUser,
-            WorkSpaceRequestDto requestDto,
+            @AuthenticationPrincipal CustomUserDetails authUser,
+            @RequestBody WorkSpaceRequestDto requestDto,
             @PathVariable Long workspaceId
     ) {
         workSpaceAdminService.deleteWorkSpace(authUser.getEmail(), workspaceId);
@@ -55,7 +58,7 @@ public class WorkSpaceAdminController {
 
     @PutMapping("/{workspaceId}/members/{memberId}")
     public ResponseEntity<ApiResponse<WorkSpaceMemberResponseDto>> changeMemberRole(
-            @AuthenticationPrincipal AuthUser authUser,
+            @AuthenticationPrincipal CustomUserDetails authUser,
             @PathVariable Long workspaceId,
             @PathVariable Long memberId,
             @RequestParam String role
@@ -70,7 +73,7 @@ public class WorkSpaceAdminController {
 
     @PatchMapping("/{workspaceId}/members/{memberId}")
     public ResponseEntity<ApiResponse<?>> deleteMember(
-            @AuthenticationPrincipal AuthUser authUser,
+            @AuthenticationPrincipal CustomUserDetails authUser,
             @PathVariable Long workspaceId,
             @PathVariable Long memberId
     ){

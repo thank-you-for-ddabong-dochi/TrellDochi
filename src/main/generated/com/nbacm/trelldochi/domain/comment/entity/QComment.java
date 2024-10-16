@@ -32,6 +32,8 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final StringPath title = createString("title");
 
+    public final StringPath userEmail = createString("userEmail");
+
     public QComment(String variable) {
         this(Comment.class, forVariable(variable), INITS);
     }
