@@ -1,5 +1,6 @@
 package com.nbacm.trelldochi.domain.common.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -63,7 +64,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageDuplicator redisMessageDuplicator(RedisTemplate<String, String> customStringRedisTemplate) {
+    public RedisMessageDuplicator redisMessageDuplicator(@Qualifier("customStringRedisTemplate") RedisTemplate<String, String> customStringRedisTemplate) {
         return new RedisMessageDuplicator(customStringRedisTemplate);
     }
 }

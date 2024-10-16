@@ -15,7 +15,6 @@ import java.time.Duration;
 
 public class RedisMessageDuplicator {
     private final RedisTemplate<String, String> redisTemplate;
-    private final Set<String> processedHashes = ConcurrentHashMap.newKeySet();
 
     public RedisMessageDuplicator(RedisTemplate<String, String> customStringRedisTemplate) {
         this.redisTemplate = customStringRedisTemplate;
