@@ -10,5 +10,11 @@ import java.util.Optional;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
+
+    Optional<Board> findByWorkSpace(WorkSpace workSpace);
+
+    List<Board> findAllByWorkSpace(WorkSpace workSpace);
+
     List<Board> findByWorkSpace(WorkSpace workspace);
+
 }

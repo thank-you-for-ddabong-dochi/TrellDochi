@@ -3,7 +3,9 @@ package com.nbacm.trelldochi.domain.workspace.repository;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceResponseDto;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpace;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +20,8 @@ import static com.nbacm.trelldochi.domain.workspace.entity.QWorkSpaceMember.work
 @Repository
 @RequiredArgsConstructor
 public class WorkSpaceQueryDslRepositoryImpl implements WorkSpaceQueryDslRepository {
-
+    @Autowired
+    EntityManager entityManager;
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -46,5 +49,19 @@ public class WorkSpaceQueryDslRepositoryImpl implements WorkSpaceQueryDslReposit
                         .toList(),
                 pageable,
                 count);
+    }
+
+    @Override
+    public void deleteRelationBoards(Long workspaceId) {
+        queryFactory
+                .update(board)
+                .where(
+                        board.workSpace.id.eq(workspaceId)
+                )
+                .set(board.isDeleted, true)
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
     }
 }

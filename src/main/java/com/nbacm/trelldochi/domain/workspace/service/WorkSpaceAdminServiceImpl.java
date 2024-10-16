@@ -1,5 +1,6 @@
 package com.nbacm.trelldochi.domain.workspace.service;
 
+import com.nbacm.trelldochi.domain.board.repository.BoardRepository;
 import com.nbacm.trelldochi.domain.common.exception.ForbiddenException;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import com.nbacm.trelldochi.domain.user.entity.UserRole;
@@ -25,6 +26,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     private final UserRepository userRepository;
     private final WorkSpaceRepository workSpaceRepository;
     private final WorkSpaceMemberRepository workSpaceMemberRepository;
+    private final BoardRepository boardRepository;
 
     @Override
     @Transactional
@@ -58,13 +60,14 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     }
 
     @Override
+    @Transactional
     public void deleteWorkSpace(String email, Long workspaceId) {
         validatePermission(email, workspaceId);
         WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(
                 () -> new WorkSpaceNotFoundException("워크 스페이스가 없습니다.")
         );
         workSpace.delete();
-        workSpaceRepository.save(workSpace);
+        workSpaceRepository.deleteRelationBoards(workspaceId);
     }
 
     @Override

@@ -6,4 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface WorkSpaceQueryDslRepository {
     Page<WorkSpaceResponseDto> findWorkSpacesByUserId(Long userId, Pageable pageable);
+
+    void deleteRelationBoards(Long workspaceId);
 }
