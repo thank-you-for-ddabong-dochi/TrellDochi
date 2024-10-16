@@ -20,7 +20,9 @@ public class TodoListResponseDto {
     public TodoListResponseDto(TodoList todoList) {
         this.title = todoList.getTitle();
         this.listOrder = todoList.getListOrder();
-        this.cardList = todoList.getCardList().stream().map(CardSummaryDto::new).toList();
+        if(todoList.getCardList() != null) {
+            this.cardList = todoList.getCardList().stream().map(CardSummaryDto::new).toList();
+        }
         this.boardId = todoList.getBoard().getId();
     }
 
