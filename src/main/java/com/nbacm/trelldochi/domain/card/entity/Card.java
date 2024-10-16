@@ -1,5 +1,6 @@
 package com.nbacm.trelldochi.domain.card.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.nbacm.trelldochi.domain.attachment.entity.Attachment;
 import com.nbacm.trelldochi.domain.card.dto.CardPatchRequestDto;
 import com.nbacm.trelldochi.domain.card.dto.CardRequestDto;
@@ -55,6 +56,7 @@ public class Card {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todolist_id")
+    @JsonBackReference
     private TodoList todolist;
 
     public Card(TodoList findTodoList, CardRequestDto cardRequestDto) {

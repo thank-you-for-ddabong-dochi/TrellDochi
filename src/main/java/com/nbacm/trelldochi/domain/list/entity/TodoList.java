@@ -1,5 +1,6 @@
 package com.nbacm.trelldochi.domain.list.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nbacm.trelldochi.domain.board.entity.Board;
 import com.nbacm.trelldochi.domain.card.entity.Card;
 import com.nbacm.trelldochi.domain.list.dto.TodoListRequestDto;
@@ -22,6 +23,7 @@ public class TodoList {
     private int listOrder;
 
     @OneToMany(mappedBy = "todolist", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Card> cardList;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -1,14 +1,20 @@
 package com.nbacm.trelldochi.domain.card.controller;
 
 import com.nbacm.trelldochi.domain.card.dto.*;
+import com.nbacm.trelldochi.domain.card.entity.Card;
 import com.nbacm.trelldochi.domain.card.service.CardService;
 import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
 import com.nbacm.trelldochi.domain.common.dto.AuthUser;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1/workspace/")
@@ -72,5 +78,20 @@ public class CardController {
         CardOneResponseDto cardOneResponseDto = cardService.patchCardStatus(userDetails, cardId, cardStateRequestDto);
         return ResponseEntity.ok(ApiResponse.success("상태를 변경했습니다.", cardOneResponseDto));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<Page<Card>>> searchCards(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String explanation,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate deadline,
+            @RequestParam(required = false) String managerName,
+            @RequestParam(required = false) Long boardId,
+            Pageable pageable
+    ) {
+        // CardService의 searchCards 메소드 호출
+        Page<Card> result = cardService.searchCards(title, explanation, deadline, managerName, boardId, pageable);
+        return ResponseEntity.ok(ApiResponse.success("카드 검색 성공", result));
+    }
+
 
 }
