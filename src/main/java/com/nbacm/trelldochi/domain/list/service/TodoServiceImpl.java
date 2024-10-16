@@ -77,7 +77,7 @@ public class TodoServiceImpl implements TodoListService {
     }
 
     @Override
-    public TodoListResponseDto getTodoList(Long boardId, Long todoListId) {
+    public TodoListResponseDto getTodoList(Long boardId, Long todoListId, CustomUserDetails userDetails) {
 
         TodoList todoList = todoRepository.findById(todoListId).orElseThrow(() -> new NotFoundException("TodoList not found"));
 
@@ -86,13 +86,6 @@ public class TodoServiceImpl implements TodoListService {
         }
 
         TodoListResponseDto todoListResponseDto = new TodoListResponseDto(todoList);
-
-        List<CardSummaryDto> cardSummaryList = todoList.getCardList()
-                .stream()
-                .map(card -> new CardSummaryDto(card.getTitle(), card.getCommentList().size()))
-                .toList();
-
-        todoListResponseDto.addCardList(cardSummaryList);
 
         return todoListResponseDto;
     }

@@ -29,6 +29,14 @@ public class TodoListController {
         return ResponseEntity.ok(ApiResponse.success("리스트 생성 성공", todoListResponseDto));
     }
 
+    @GetMapping("boards/{boardId}/todoList/{todoListId}")
+    public ResponseEntity<?> getBoard(@PathVariable("boardId") Long boardId,
+                                      @PathVariable("todoListId") Long todoListId,
+                                      @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        TodoListResponseDto todoListResponseDto = todoListService.getTodoList(boardId, todoListId, userDetails);
+    }
+
     @PutMapping("boards/{boardId}/todoList/{todoListId}")
     public ResponseEntity<?> updateList(@PathVariable("boardId") Long boardId,
                                         @PathVariable("todoListId") Long todoListId,
@@ -49,7 +57,7 @@ public class TodoListController {
         return ResponseEntity.ok(ApiResponse.success("리스트 순서 변경 성공", ""));
     }
 
-    @DeleteMapping("boards/{boardId}/todoList/{todoListId}")
+    @PatchMapping("boards/{boardId}/todoList/{todoListId}")
     public ResponseEntity<?> deleteList(@PathVariable("boardId") Long boardId,
                                         @PathVariable("todoListId") Long todoListId,
                                         @AuthenticationPrincipal CustomUserDetails userDetails) {

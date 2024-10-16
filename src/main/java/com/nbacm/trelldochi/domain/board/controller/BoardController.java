@@ -59,7 +59,7 @@ public class BoardController {
         return ResponseEntity.ok(ApiResponse.success("보드 수정 성공", boardResponseDto));
     }
 
-    @DeleteMapping("/workspace/{workspaceId}/boards/{boardId}")
+    @PatchMapping("/workspace/{workspaceId}/boards/{boardId}")
     public ResponseEntity<?> deleteBoard(@PathVariable("workspaceId") Long workspaceId,
                                          @PathVariable("boardId") Long boardId,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {

@@ -11,15 +11,17 @@ import java.util.List;
 public class BoardRequestDto {
 
     private String title;
-    private String contents;
+    private String backgroundColor;
+    private String backgroundImageUrl;
     private List<TodoList> todoLists;
 
     public BoardRequestDto() {
     }
 
-    public BoardRequestDto(String title, String contents, List<TodoList> todoLists) {
+    public BoardRequestDto(String title, String backgroundColor, String backgroundImageUrl, List<TodoList> todoLists) {
         this.title = title;
-        this.contents = contents;
+        this.backgroundColor = backgroundColor;
+        this.backgroundImageUrl = backgroundImageUrl;
         this.todoLists = todoLists;
     }
 }

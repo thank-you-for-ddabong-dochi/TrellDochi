@@ -39,9 +39,13 @@ public class BoardServiceImpl implements BoardService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
+        if(boardRequestDto.getBackgroundImageUrl() != null) {
+
+        }
+
         WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException("Work Space Not Found"));
 
-        Board board = new Board(boardRequestDto.getTitle(), boardRequestDto.getContents(), workSpace);
+        Board board = new Board(boardRequestDto.getTitle(), boardRequestDto.getBackgroundColor(), boardRequestDto.getBackgroundImageUrl(), workSpace);
 
         Board savedBoard = boardRepository.save(board);
 
@@ -93,6 +97,9 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board Not Found"));
+        if(!board.getIsDeleted()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         board.delete();
 
         return new BoardResponseDto(board);
