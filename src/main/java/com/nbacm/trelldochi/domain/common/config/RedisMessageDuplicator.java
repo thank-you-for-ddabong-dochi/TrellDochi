@@ -23,20 +23,13 @@ public class RedisMessageDuplicator {
     public boolean isNewMessage(String message) {
         String messageHash = calculateHash(message);
 
-        if (processedHashes.contains(messageHash)) {
-            return false;
-        }
-
         String key = "processed_message:" + messageHash;
-        Boolean isNew = redisTemplate.opsForValue().setIfAbsent(key, "1");
 
-        if (Boolean.TRUE.equals(isNew)) {
-            redisTemplate.expire(key, Duration.ofMinutes(5));  // 5분 후 만료
-            processedHashes.add(messageHash);
-            return true;
-        }
+        // Redis 명령어로 SETNX와 EXPIRE를 원자적으로 처리
+        Boolean isNew = redisTemplate.opsForValue().setIfAbsent(key, "1", Duration.ofMinutes(5));
 
-        return false;
+        // isNew가 TRUE면 새로운 메시지, FALSE면 중복 메시지
+        return Boolean.TRUE.equals(isNew);
     }
 
     private String calculateHash(String message) {

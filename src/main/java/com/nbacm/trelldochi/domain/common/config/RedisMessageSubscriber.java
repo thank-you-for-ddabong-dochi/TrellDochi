@@ -1,17 +1,11 @@
 package com.nbacm.trelldochi.domain.common.config;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nbacm.trelldochi.domain.notifications.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.MessageListener;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.data.redis.connection.Message;
-
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Component
