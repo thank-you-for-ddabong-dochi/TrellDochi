@@ -43,13 +43,16 @@ public class TodoServiceImpl implements TodoListService {
         // 현재 로그인 중인 유저가 해당 워크스페이스의 맴버인지 판단이 필요함
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board not found"));
 
+        // 해당 보드 내의 가장 높은 ListOrder 조회
+        int maxListOrder = todoRepository.findMaxListOrderByBoardId(boardId);
+
         if(!isAuthorized(board.getWorkSpace().getId(), userDetails)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
         // 해당 리스트가 보드에 속해있는 것이 맞는지에 대해 판단이 요구됨
 
-        TodoList todoList = new TodoList(todoListRequestDto.getTitle(), todoListRequestDto.getListOrder(), board);
+        TodoList todoList = new TodoList(todoListRequestDto.getTitle(), maxListOrder + 1, board);
 
         TodoList savedTodoList = todoRepository.save(todoList);
 

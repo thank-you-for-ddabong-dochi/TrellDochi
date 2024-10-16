@@ -1,5 +1,7 @@
 package com.nbacm.trelldochi.domain.card.service;
 
+import com.nbacm.trelldochi.domain.card.dto.CardOneResponseDto;
+import com.nbacm.trelldochi.domain.card.dto.CardRankingResponseDto;
 import com.nbacm.trelldochi.domain.card.dto.CardResponseDto;
 import com.nbacm.trelldochi.domain.card.entity.Card;
 import com.nbacm.trelldochi.domain.card.repository.CardRepository;
@@ -13,17 +15,19 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CardViewService {
 
-    @Autowired
     private final RedisTemplate<String, Object> redisTemplate;
-    @Autowired
-    private CardRepository cardRepository;
+    private final CardRepository cardRepository;
 
     private static final String VIEW_COUNT_KEY = "card:viewCount:";
     private static final String RANKING_KEY = "card:ranking";
@@ -35,7 +39,15 @@ public class CardViewService {
         String userKey = VIEW_COUNT_KEY + cardId + "userId:" + userId;
 
         // 사용자가 이미 조회한 사용자인지 확인
-        if(!redisTemplate.hasKey(userKey)) {
+        if(Boolean.FALSE.equals(redisTemplate.hasKey(userKey))) {
+            // 캐시에서 조회수 가져오기
+            Integer viewCount = getCardViewCountWithCache(cardId);
+
+            if (viewCount == null) {
+                // 캐시에 없으면 DB에서 조회
+                viewCount = cardRepository.findById(cardId).orElseThrow().getViewCount();
+                redisTemplate.opsForValue().set(cardKey, viewCount);
+            }
 
             // 조회수 증가, increment를 사용해서 해당 키에 대한 값을 증가시킴
             redisTemplate.opsForValue().increment(cardKey);
@@ -49,9 +61,31 @@ public class CardViewService {
     }
 
     // 조회수 랭킹 가져오기
-    public Set<Object> getRanking(int topN) {
+    public List<CardRankingResponseDto> getRanking(int topN) {
         // 상위 topN개의 카드의 ID를 반환, reverseRange를 사용해서 점수가 높은 순서로 요소를 반환
-        return redisTemplate.opsForZSet().reverseRange(RANKING_KEY, 0, topN -1);
+        Set<Object> rankedCardIds = redisTemplate.opsForZSet().reverseRange(RANKING_KEY, 0, topN -1);
+
+        // 카드 ID가 존재할 경우, DB에서 조회
+        if (rankedCardIds != null && !rankedCardIds.isEmpty()) {
+            List<Long> cardIdList = rankedCardIds.stream()
+                    .map(Object::toString)
+                    .map(Long::valueOf)
+                    .toList();
+
+            // CardRankingResponseDto로 변환 (순위 및 조회수 포함)
+            List<Card> rankedCards = cardRepository.findAllById(cardIdList);
+
+            List<CardRankingResponseDto> cardRanking = new ArrayList<>();
+            int rank = 1;
+            for (Card card : rankedCards) {
+                int viewCount = getCardViewCountWithCache(card.getId());
+                cardRanking.add(new CardRankingResponseDto(card.getId(), card.getTitle(), rank++, viewCount));
+            }
+            return cardRanking;
+        }
+
+        // 랭킹에 해당하는 카드가 없을 경우 빈 리스트 반환
+        return Collections.emptyList();
     }
 
     // 조회수 조회 기능
@@ -75,7 +109,6 @@ public class CardViewService {
     }
 
     // Cache 없이 viewCount 설정
-    @Transactional(isolation = Isolation.SERIALIZABLE)
     public CardResponseDto incrementCardViewCount(Card card) {
 
         // 카드 조회수 증가

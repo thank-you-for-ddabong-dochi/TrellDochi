@@ -25,11 +25,14 @@ import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +46,7 @@ public class CardServiceImpl implements CardService {
     private final CardManagerRepository cardManagerRepository;
     private final UserRepository userRepository;
     private final CardViewService cardViewService;
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -67,6 +70,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     public CardOneResponseDto getCard(Long cardId) {
 
         Card findCard = findCard(cardId);
@@ -74,6 +78,21 @@ public class CardServiceImpl implements CardService {
         cardViewService.incrementCardViewCount(findCard);
 
         return new CardOneResponseDto(findCard);
+    }
+
+    public CardOneResponseDto getCardWithCache(Long cardId, CustomUserDetails customUserDetails) {
+
+        User user = userRepository.findByEmailOrElseThrow(customUserDetails.getEmail());
+
+        cardViewService.incrementCardViewCountWithCache(cardId, user.getId());
+
+        Card findCard = findCard(cardId);
+
+        return new CardOneResponseDto(findCard);
+    }
+
+    public List<CardRankingResponseDto> getCardRanking(int topN) {
+        return cardViewService.getRanking(topN);
     }
 
     @Override
