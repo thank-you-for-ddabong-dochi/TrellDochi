@@ -8,10 +8,11 @@ import com.nbacm.trelldochi.domain.user.repository.UserRepository;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceMemberResponseDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceRequestDto;
 import com.nbacm.trelldochi.domain.workspace.dto.WorkSpaceResponseDto;
+import com.nbacm.trelldochi.domain.workspace.entity.MemberRole;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpace;
 import com.nbacm.trelldochi.domain.workspace.entity.WorkSpaceMember;
-import com.nbacm.trelldochi.domain.workspace.entity.MemberRole;
 import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceAccessDeniedException;
+import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceMemberNotFoundException;
 import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceNotFoundException;
 import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceMemberRepository;
 import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceRepository;
@@ -51,8 +52,9 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     @Override
     @Transactional
     public WorkSpaceResponseDto updateWorkSpace(String email, WorkSpaceRequestDto requestDto, Long workspaceId) {
-        validatePermission(email, workspaceId);
         WorkSpace workSpace = workSpaceRepository.findByUserEmailAndIdOrElseThrow(email, workspaceId);
+        User user = userRepository.findByEmailOrElseThrow(email);
+        isOwner(user.getId(), workSpace.getOwner().getId());
         workSpace.update(requestDto);
         WorkSpace updatedWorkSpace = workSpaceRepository.save(workSpace);
 
@@ -62,10 +64,11 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     @Override
     @Transactional
     public void deleteWorkSpace(String email, Long workspaceId) {
-        validatePermission(email, workspaceId);
         WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(
                 () -> new WorkSpaceNotFoundException("워크 스페이스가 없습니다.")
         );
+        User user = userRepository.findByEmailOrElseThrow(email);
+        isOwner(user.getId(), workSpace.getOwner().getId());
         workSpace.delete();
         workSpaceRepository.deleteRelationBoards(workspaceId);
     }
@@ -73,9 +76,14 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     @Override
     @Transactional
     public WorkSpaceMemberResponseDto changeMemberRole(String email, Long workspaceId, Long memberId, String role) {
-        validatePermission(email,workspaceId);
+        validatePermission(email, workspaceId);
+        WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(()
+                -> new WorkSpaceNotFoundException("워크 스페이스가 없습니다.")
+        );
+        isOwner(memberId, workSpace.getOwner().getId());
+
         WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(memberId, workspaceId).orElseThrow(
-                () -> new WorkSpaceNotFoundException("워크 스페이스가 존재하지 않습니다.")
+                () -> new WorkSpaceMemberNotFoundException("워크 스페이스 멤버가 존재하지 않습니다.")
         );
         workSpaceMember.changeRole(role);
         WorkSpaceMember savedWorkSpaceMember = workSpaceMemberRepository.save(workSpaceMember);
@@ -86,12 +94,16 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     @Override
     @Transactional
     public void deleteMember(String email, Long workspaceId, Long memberId) {
-        validatePermission(email,workspaceId);
+        validatePermission(email, workspaceId);
         WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(memberId, workspaceId).orElseThrow(
                 () -> new WorkSpaceNotFoundException("워크 스페이스가 존재하지 않습니다.")
         );
-        workSpaceMember.delete();
-        workSpaceMemberRepository.save(workSpaceMember);
+        WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(()
+                -> new WorkSpaceNotFoundException("워크 스페이스가 없습니다.")
+        );
+        isOwner(memberId, workSpace.getOwner().getId());
+
+        workSpaceMemberRepository.delete(workSpaceMember);
     }
 
     private void validatePermission(String email, Long workspaceId) {
@@ -102,5 +114,12 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
         if (!workSpaceMember.getRole().equals(MemberRole.ADMIN)) {
             throw new WorkSpaceAccessDeniedException("워크 스페이스 ADMIN 권한이 없습니다.");
         }
+    }
+
+    //오너만 workspace의 수정, 삭제 가능하게 수정
+    private void isOwner(Long userid, Long ownerId) {
+        if (!ownerId.equals(userid)) {
+            throw new WorkSpaceAccessDeniedException("워크 스페이스 소유자가 아닙니다.");
+        };
     }
 }
