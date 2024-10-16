@@ -25,6 +25,7 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(redisHost, redisPort); // Lettuce로 변경
+    }
     @Bean
     public MessageListenerAdapter messageListenerAdapter(RedisMessageSubscriber subscriber) {
         return new MessageListenerAdapter(subscriber, "handleMessage");
