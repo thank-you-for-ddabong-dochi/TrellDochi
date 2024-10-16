@@ -34,4 +34,6 @@ public interface CardService {
     void deleteCard(CustomUserDetails customUserDetails, Long workspaceId, Long cardId);
 
     CardOneResponseDto addManager(CustomUserDetails userDetails, Long cardId, CardManagerRequestDto cardManagerRequestDto);
+
+    CardOneResponseDto patchCardStatus(CustomUserDetails userDetails, Long cardId, CardStatusRequestDto cardStateRequestDto);
 }
