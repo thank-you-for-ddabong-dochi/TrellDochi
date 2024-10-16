@@ -21,9 +21,11 @@ public class CacheConfig extends CachingConfigurerSupport {
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
 
+        // 캐시 설정
         RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofHours(1))
+                .entryTtl(Duration.ofHours(12)) // TTL 12시간 설정(캐시된 데이터 만료시간)
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
+                // 데이터 저장시 Key, Value 에 대한 직렬화, 현재는 String 타입으로 처리하는 직렬화를 사용
 
         return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(cacheConfig)

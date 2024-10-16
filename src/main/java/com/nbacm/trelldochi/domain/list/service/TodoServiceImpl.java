@@ -4,6 +4,7 @@ import com.nbacm.trelldochi.domain.board.entity.Board;
 import com.nbacm.trelldochi.domain.board.repository.BoardRepository;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.common.exception.NotFoundException;
+import com.nbacm.trelldochi.domain.list.dto.CardSummaryDto;
 import com.nbacm.trelldochi.domain.list.dto.MoveListRequestDto;
 import com.nbacm.trelldochi.domain.list.dto.TodoListRequestDto;
 import com.nbacm.trelldochi.domain.list.dto.TodoListResponseDto;
@@ -19,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +52,8 @@ public class TodoServiceImpl implements TodoListService {
         return new TodoListResponseDto(savedTodoList);
     }
 
+
+
     @Override
     @Transactional
     public void moveTodoList(MoveListRequestDto moveListRequestDto) {
@@ -57,6 +62,7 @@ public class TodoServiceImpl implements TodoListService {
         int currentOrder = todoList.getListOrder();
         int targetOrder = moveListRequestDto.getTargetOrder();
 
+        // 별도의 메서드로 분리!!!
         // 리스트를 뒤쪽으로 이동시킬 때
         if(currentOrder < targetOrder) {
             todoRepository.decrementOrderBetween(currentOrder+1, targetOrder);
@@ -68,6 +74,23 @@ public class TodoServiceImpl implements TodoListService {
 
         todoList.move(targetOrder);
         todoRepository.save(todoList);
+    }
+
+    @Override
+    public TodoListResponseDto getTodoList(Long boardId, Long todoListId) {
+
+        TodoList todoList = todoRepository.findById(todoListId).orElseThrow();
+
+        TodoListResponseDto todoListResponseDto = new TodoListResponseDto(todoList);
+
+        List<CardSummaryDto> cardSummaryList = todoList.getCardList()
+                .stream()
+                .map(card -> new CardSummaryDto(card.getTitle(), card.getCommentList().size()))
+                .toList();
+
+        todoListResponseDto.addCardList(cardSummaryList);
+
+        return todoListResponseDto;
     }
 
 
