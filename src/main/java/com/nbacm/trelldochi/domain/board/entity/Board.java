@@ -25,6 +25,9 @@ public class Board {
     @Column(nullable = false)
     private String contents;
 
+    @Column(nullable = false)
+    private String background;
+
     @OneToMany(mappedBy = "board")
     private List<TodoList> todoLists;
 
