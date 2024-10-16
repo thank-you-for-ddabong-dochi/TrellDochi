@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Service
@@ -47,6 +50,7 @@ public class CardViewService {
     }
 
     // Cache 없이 viewCount 설정
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public CardResponseDto incrementCardViewCount(Card card) {
 
         // 카드 조회수 증가

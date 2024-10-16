@@ -97,7 +97,7 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("Board Not Found"));
-        if(!board.getIsDeleted()) {
+        if(board.getIsDeleted()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         board.delete();
