@@ -6,6 +6,7 @@ import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceNotFoundExceptio
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.util.Optional;
 
@@ -26,5 +27,6 @@ public interface WorkSpaceRepository extends JpaRepository<WorkSpace, Long>, Wor
     }
 
     @Query("Select wm from WorkSpaceMember wm where wm.workspace.id = :workspaceId and wm.user.email = :email")
-    Optional<WorkSpaceMember> findByUserEmailAndWorkspaceId(String email, Long workspaceId);
+    Optional<WorkSpaceMember> findByUserEmailAndWorkspaceId(@Param("email") String email, @Param("workspaceId") Long workspaceId);
+
 }
