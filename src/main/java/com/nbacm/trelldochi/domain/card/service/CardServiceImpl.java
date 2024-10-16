@@ -95,9 +95,7 @@ public class CardServiceImpl implements CardService {
         // workspace 접근 권한 환인하기
         isAuthInWorkSpace(customUserDetails, workspaceId);
 
-        for (Comment comment : findCard.getCommentList()) {
-            comment.deleteComment();
-        }
+        commentRepository.deleteAllWithCardId(cardId);
 
         findCard.deleteCard();
     }
