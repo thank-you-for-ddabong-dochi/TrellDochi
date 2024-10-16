@@ -63,6 +63,16 @@ public class AwsS3Service {
         return url;
     }
 
+    @Transactional
+    public String upload(MultipartFile image) {
+        // 이미지 파일이 없는 경우 오류
+        if(image.isEmpty() || Objects.isNull(image.getOriginalFilename())){
+            throw new AmazonS3Exception("not found image");
+        }
+        // 이미지 저장하기
+        return this.uploadImage(image);
+    }
+
     private String uploadImage(MultipartFile image) {
         this.validateImageFileExtention(image.getOriginalFilename());
         try {
