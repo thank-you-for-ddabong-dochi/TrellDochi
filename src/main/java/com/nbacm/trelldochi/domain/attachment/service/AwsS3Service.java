@@ -1,68 +1,114 @@
 package com.nbacm.trelldochi.domain.attachment.service;
 
+import ch.qos.logback.core.spi.ErrorCodes;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
+import com.amazonaws.util.IOUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.integration.IntegrationProperties;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.lang.model.type.ErrorType;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.*;
 
-@Service
+@Slf4j
 @RequiredArgsConstructor
+@Component
 public class AwsS3Service {
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
 
     private final AmazonS3 amazonS3;
 
-    public List<String> uploadFile(List<MultipartFile> multipartFile) {
-        List<String> fileNameList = new ArrayList<>();
+    @Value("${cloud.aws.s3.bucketName}")
+    private String bucketName;
 
-        // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
-        multipartFile.forEach(file -> {
-            String fileName = createFileName(file.getOriginalFilename());
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(file.getSize());
-            objectMetadata.setContentType(file.getContentType());
-
-            try(InputStream inputStream = file.getInputStream()) {
-                amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
-            } catch(IOException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
-            }
-
-            fileNameList.add(fileName);
-        });
-
-        return fileNameList;
+    public String upload(MultipartFile image) {
+        if(image.isEmpty() || Objects.isNull(image.getOriginalFilename())){
+            throw new AmazonS3Exception("not found image");
+        }
+        return this.uploadImage(image);
     }
 
-    public void deleteFile(String fileName) {
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
-    }
-
-    private String createFileName(String fileName) { // 먼저 파일 업로드 시, 파일명을 난수화하기 위해 random으로 돌립니다.
-        return UUID.randomUUID().toString().concat(getFileExtension(fileName));
-    }
-
-    private String getFileExtension(String fileName) { // file 형식이 잘못된 경우를 확인하기 위해 만들어진 로직이며, 파일 타입과 상관없이 업로드할 수 있게 하기 위해 .의 존재 유무만 판단하였습니다.
+    private String uploadImage(MultipartFile image) {
+        this.validateImageFileExtention(image.getOriginalFilename());
         try {
-            return fileName.substring(fileName.lastIndexOf("."));
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
+            return this.uploadImageToS3(image);
+        } catch (IOException e) {
+            throw new AmazonS3Exception("could not upload image", e);
+        }
+    }
+
+    private void validateImageFileExtention(String filename) {
+        int lastDotIndex = filename.lastIndexOf(".");
+        if (lastDotIndex == -1) {
+            throw new AmazonS3Exception("not found image");
+        }
+
+        String extention = filename.substring(lastDotIndex + 1).toLowerCase();
+        List<String> allowedExtentionList = Arrays.asList("jpg", "jpeg", "png", "gif");
+
+        if (!allowedExtentionList.contains(extention)) {
+            throw new AmazonS3Exception("유효하지 않은 파일입니다.");
+        }
+    }
+
+    private String uploadImageToS3(MultipartFile image) throws IOException {
+        String originalFilename = image.getOriginalFilename(); //원본 파일 명
+        String extention = originalFilename.substring(originalFilename.lastIndexOf(".")); //확장자 명
+
+        String s3FileName = UUID.randomUUID().toString().substring(0, 10) + originalFilename; //변경된 파일 명
+
+        InputStream is = image.getInputStream();
+        byte[] bytes = IOUtils.toByteArray(is);
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("image/" + extention);
+        metadata.setContentLength(bytes.length);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+
+        try{
+            PutObjectRequest putObjectRequest =
+                    new PutObjectRequest(bucketName, s3FileName, byteArrayInputStream, metadata)
+                            .withCannedAcl(CannedAccessControlList.PublicRead);
+            amazonS3.putObject(putObjectRequest); // put image to S3
+        }catch (Exception e){
+            throw new AmazonS3Exception("유효하지 않습니다.");
+        }finally {
+            byteArrayInputStream.close();
+            is.close();
+        }
+
+        return amazonS3.getUrl(bucketName, s3FileName).toString();
+    }
+
+    public void deleteImageFromS3(String imageAddress){
+        String key = getKeyFromImageAddress(imageAddress);
+        try{
+            amazonS3.deleteObject(new DeleteObjectRequest(bucketName, key));
+        }catch (Exception e){
+            throw new AmazonS3Exception("삭제하지 못했습니다.");
+        }
+    }
+
+    private String getKeyFromImageAddress(String imageAddress){
+        try{
+            URL url = new URL(imageAddress);
+            String decodingKey = URLDecoder.decode(url.getPath(), "UTF-8");
+            return decodingKey.substring(1); // 맨 앞의 '/' 제거
+        }catch (MalformedURLException | UnsupportedEncodingException e){
+            throw new AmazonS3Exception("이미지가 없습니다.");
         }
     }
 }
