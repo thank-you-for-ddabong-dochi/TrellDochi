@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
-    List<Board> findByWorkspaceIdAndIsDeletedFalse(Long workspaceId);
+    List<Board> findByWorkSpace(WorkSpace workspace);
 }

@@ -20,7 +20,7 @@ public class TodoListController {
     private final TodoListService todoListService;
 
     @PostMapping("boards/{boardId}")
-    public ResponseEntity<?> createBoard(@PathVariable Long boardId,
+    public ResponseEntity<?> createBoard(@PathVariable("boardId") Long boardId,
                                          @RequestBody TodoListRequestDto todoListRequestDto,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 
@@ -30,8 +30,8 @@ public class TodoListController {
     }
 
     @PutMapping("boards/{boardId}/todoList/{todoListId}")
-    public ResponseEntity<?> updateList(@PathVariable Long boardId,
-                                        @PathVariable Long todoListId,
+    public ResponseEntity<?> updateList(@PathVariable("boardId") Long boardId,
+                                        @PathVariable("todoListId") Long todoListId,
                                         @RequestBody TodoListRequestDto todoListRequestDto,
                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
 
@@ -41,7 +41,7 @@ public class TodoListController {
     }
 
     @PatchMapping("boards/{boardId}")
-    public ResponseEntity<?> moveList(@PathVariable Long boardId,
+    public ResponseEntity<?> moveList(@PathVariable("boardId") Long boardId,
                                       @RequestBody MoveListRequestDto moveListRequestDto) {
 
         todoListService.moveTodoList(moveListRequestDto);
@@ -50,7 +50,9 @@ public class TodoListController {
     }
 
     @DeleteMapping("boards/{boardId}/todoList/{todoListId}")
-    public ResponseEntity<?> deleteList(@PathVariable Long boardId, @PathVariable Long todoListId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> deleteList(@PathVariable("boardId") Long boardId,
+                                        @PathVariable("todoListId") Long todoListId,
+                                        @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         TodoListResponseDto todoListResponseDto = todoListService.deleteTodoList(boardId, todoListId, userDetails);
 

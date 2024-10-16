@@ -53,7 +53,7 @@ public class BoardServiceImpl implements BoardService {
 
         WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException("Work Space Not Found"));
 
-        List<Board> boardList = boardRepository.findByWorkspaceIdAndIsDeletedFalse(workspaceId);
+        List<Board> boardList = boardRepository.findByWorkSpace(workSpace);
 
         return boardList.stream().map(BoardResponseDto::new).toList();
     }
