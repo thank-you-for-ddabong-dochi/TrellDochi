@@ -21,10 +21,10 @@ public class TodoList {
     @Column(nullable = false)
     private int listOrder;
 
-    @OneToMany(mappedBy = "todolist")
+    @OneToMany(mappedBy = "todolist", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Card> cardList;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 

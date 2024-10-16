@@ -1,59 +1,37 @@
 package com.nbacm.trelldochi.domain.card.service;
 
-import com.nbacm.trelldochi.domain.card.dto.CardOneResponseDto;
-import com.nbacm.trelldochi.domain.card.dto.CardPatchRequestDto;
-import com.nbacm.trelldochi.domain.card.dto.CardRequestDto;
-import com.nbacm.trelldochi.domain.card.dto.CardResponseDto;
+import com.nbacm.trelldochi.domain.card.dto.*;
 import com.nbacm.trelldochi.domain.card.entity.Card;
+import com.nbacm.trelldochi.domain.card.entity.CardManager;
 import com.nbacm.trelldochi.domain.card.exception.CardNotFoundException;
+import com.nbacm.trelldochi.domain.card.repository.CardManagerRepository;
 import com.nbacm.trelldochi.domain.card.repository.CardRepository;
 import com.nbacm.trelldochi.domain.comment.entity.Comment;
 import com.nbacm.trelldochi.domain.comment.repository.CommentRepository;
-import com.nbacm.trelldochi.domain.common.dto.AuthUser;
+import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
+import com.nbacm.trelldochi.domain.list.entity.TodoList;
+import com.nbacm.trelldochi.domain.list.repository.TodoRepository;
+import com.nbacm.trelldochi.domain.user.entity.User;
+import com.nbacm.trelldochi.domain.user.exception.UserNotFoundException;
+import com.nbacm.trelldochi.domain.user.repository.UserRepository;
+import com.nbacm.trelldochi.domain.workspace.entity.MemberRole;
+import com.nbacm.trelldochi.domain.workspace.entity.WorkSpaceMember;
+import com.nbacm.trelldochi.domain.workspace.exception.WorkSpaceAccessDeniedException;
+import com.nbacm.trelldochi.domain.workspace.repository.WorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
-public class CardService {
+public interface CardService {
 
-    private final CardRepository cardRepository;
-    private final CommentRepository commentRepository;
+    CardResponseDto createCard(CustomUserDetails customUserDetails, Long workspaceId, Long todoListId, CardRequestDto cardRequestDto);
 
-    public CardResponseDto createCard(AuthUser authUser, CardRequestDto cardRequestDto) {
-        return new CardResponseDto(cardRepository.save(new Card(cardRequestDto)));
-    }
+    CardOneResponseDto getCard(Long cardId);
 
-    public CardOneResponseDto getCard(Long cardId) {
-        Card findCard = cardRepository.findCardAndCommentsById(cardId).orElseThrow(CardNotFoundException::new);
-        if (findCard.isDeleted()) {
-            throw new CardNotFoundException();
-        }
-        return new CardOneResponseDto(findCard);
-    }
+    CardResponseDto putCard(CustomUserDetails customUserDetails, Long workspaceId, Long cardId, CardPatchRequestDto cardPatchRequestDto);
 
-    @Transactional
-    public CardResponseDto putCard(Long cardId, CardPatchRequestDto cardPatchRequestDto) {
-        Card findCard = cardRepository.findById(cardId).orElseThrow(CardNotFoundException::new);
-        if (findCard.isDeleted()) {
-            throw new CardNotFoundException();
-        }
-        return new CardResponseDto(findCard.putCard(cardPatchRequestDto));
-    }
+    void deleteCard(CustomUserDetails customUserDetails, Long workspaceId, Long cardId);
 
-    @Transactional
-    public void deleteCard(Long cardId) {
-        Card findCard = cardRepository.findCardAndCommentsById(cardId).orElseThrow(CardNotFoundException::new);
-
-        if (findCard.isDeleted()) {
-            throw new CardNotFoundException();
-        }
-
-        for (Comment comment : findCard.getCommentList()) {
-            comment.deleteComment();
-        }
-
-        findCard.deleteCard();
-    }
+    CardOneResponseDto addManager(CustomUserDetails userDetails, Long cardId, CardManagerRequestDto cardManagerRequestDto);
 }

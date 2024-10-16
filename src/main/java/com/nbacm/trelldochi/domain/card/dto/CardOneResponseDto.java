@@ -15,6 +15,7 @@ public class CardOneResponseDto {
     private String explanation;
     private LocalDate deadline;
     private CardStatus cardStatus;
+    private List<CardManagerResponseDto> cardManagerResponseDtoList;
     private List<CommentResponseDto> commentList;
 
     public CardOneResponseDto(Card savedCard) {
@@ -22,6 +23,7 @@ public class CardOneResponseDto {
         explanation = savedCard.getExplanation();
         deadline = savedCard.getDeadline();
         cardStatus = savedCard.getStatus();
+        this.cardManagerResponseDtoList = savedCard.getManagerList().stream().map(CardManagerResponseDto::new).toList();
         this.commentList = savedCard.getCommentList().stream().map(CommentResponseDto::new).toList();
     }
 }

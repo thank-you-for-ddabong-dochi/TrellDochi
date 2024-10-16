@@ -8,6 +8,8 @@ public class MoveListRequestDto {
     private Long todoListId;
     private int targetOrder;
 
+    public MoveListRequestDto() {}
+
     public MoveListRequestDto(Long todoListId, int targetOrder) {
         this.todoListId = todoListId;
         this.targetOrder = targetOrder;

@@ -13,6 +13,7 @@ public interface TodoListService {
 
     TodoListResponseDto createTodoList(Long boardId, TodoListRequestDto todoListRequestDto, CustomUserDetails userDetails);
     void moveTodoList(MoveListRequestDto moveListRequestDto);
+    TodoListResponseDto getTodoList(Long boardId, Long todoListId);
     TodoListResponseDto updateTodoList(Long boardId, Long listId, TodoListRequestDto todoListRequestDto, CustomUserDetails userDetails);
     TodoListResponseDto deleteTodoList(Long boardId, Long listId, CustomUserDetails userDetails);
 }
