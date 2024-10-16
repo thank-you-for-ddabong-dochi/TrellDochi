@@ -51,6 +51,7 @@ public class Card {
     private List<Attachment> attachmentList = new ArrayList<>();
 
     @BatchSize(size = 10)
+    @JsonBackReference
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<CardManager> managerList = new ArrayList<>();
 

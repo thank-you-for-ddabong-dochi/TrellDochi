@@ -9,7 +9,6 @@ import com.nbacm.trelldochi.domain.card.exception.CardManagerAlreadyExistExcepti
 import com.nbacm.trelldochi.domain.card.exception.CardNotFoundException;
 import com.nbacm.trelldochi.domain.card.repository.CardManagerRepository;
 import com.nbacm.trelldochi.domain.card.repository.CardRepository;
-import com.nbacm.trelldochi.domain.comment.entity.Comment;
 import com.nbacm.trelldochi.domain.comment.repository.CommentRepository;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.list.entity.TodoList;
@@ -43,7 +42,7 @@ public class CardServiceImpl implements CardService {
     private final CardManagerRepository cardManagerRepository;
     private final UserRepository userRepository;
     private final CardViewService cardViewService;
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
