@@ -1,5 +1,6 @@
 package com.nbacm.trelldochi.domain.attachment.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nbacm.trelldochi.domain.card.entity.Card;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class Attachment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id")
+    @JsonIgnore
     private Card card;
 
     public Attachment(String fileName, String url, Card findCard) {

@@ -47,9 +47,11 @@ public class Card {
     @Version
     private Long version;  // 버전 필드, 이 필드로 동시성 제어를 수행
 
+    @JsonBackReference
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
+    @JsonBackReference
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Attachment> attachmentList = new ArrayList<>();
 

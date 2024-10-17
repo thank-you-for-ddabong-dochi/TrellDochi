@@ -1,5 +1,6 @@
 package com.nbacm.trelldochi.domain.comment.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nbacm.trelldochi.domain.card.entity.Card;
 import com.nbacm.trelldochi.domain.comment.dto.CommentRequestDto;
 import jakarta.persistence.*;
@@ -25,6 +26,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id")
+    @JsonIgnore
     private Card card;
 
     private boolean isDeleted = false;
