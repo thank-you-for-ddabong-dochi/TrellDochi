@@ -21,4 +21,7 @@ public interface TodoRepository extends JpaRepository<TodoList, Long> {
     @Modifying
     @Query("update TodoList t set t.listOrder = t.listOrder-1 where t.listOrder between :startOrder and :endOrder")
     void decrementOrderBetween(@Param("startOrder") int startOrder, @Param("endOrder") int endOrder);
+
+    @Query("select coalesce(max(t.listOrder), 0) from TodoList t where t.board.id = :boardId")
+    int findMaxListOrderByBoardId(@Param("boardId") Long boardId);
 }

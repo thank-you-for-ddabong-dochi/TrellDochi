@@ -6,19 +6,13 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class TodoListRequestDto {
+public class        TodoListRequestDto {
 
     private String title;
-    private int listOrder;
-    private List<Card> cardList;
-    private Long boardId;
 
     public TodoListRequestDto() {}
 
-    public TodoListRequestDto(String title, int listOrder, List<Card> cardList, Long boardId) {
+    public TodoListRequestDto(String title) {
         this.title = title;
-        this.listOrder = listOrder;
-        this.cardList = cardList;
-        this.boardId = boardId;
     }
 }

@@ -4,12 +4,10 @@ import com.nbacm.trelldochi.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@SQLRestriction("is_deleted = false")
 @Table(name = "workspace_member")
 public class WorkSpaceMember {
 
@@ -28,7 +26,6 @@ public class WorkSpaceMember {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
-    private Boolean isDeleted = false;
 
     public WorkSpaceMember(User user, WorkSpace workSpace, MemberRole role) {
         this.user = user;
