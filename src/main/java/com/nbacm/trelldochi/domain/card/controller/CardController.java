@@ -25,7 +25,7 @@ public class CardController {
     private final CardService cardService;
 
     // "/todoList/{todoList_id}/cards"
-    @PostMapping("/{workspaceId}/bord/todo/{todoListId}/cards")
+    @PostMapping("/{workspaceId}/board/todo/{todoListId}/cards")
     public ResponseEntity<ApiResponse<CardResponseDto>> createCard(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable("workspaceId") Long workspaceId,
@@ -35,25 +35,25 @@ public class CardController {
         return ResponseEntity.ok(ApiResponse.success("카드 생성 성공", cardResponseDto));
     }
 
-    @GetMapping("/bord/todo/cards/{cardId}")
+    @GetMapping("/board/todo/cards/{cardId}")
     public ResponseEntity<ApiResponse<CardOneResponseDto>> getCard(@PathVariable("cardId") Long cardId) {
         CardOneResponseDto cardOneResponseDto = cardService.getCard(cardId);
         return ResponseEntity.ok(ApiResponse.success("카드 조회 성공", cardOneResponseDto));
     }
 
-    @GetMapping("/bord/todo/cards/{cardId}/cache")
+    @GetMapping("/board/todo/cards/{cardId}/cache")
     public ResponseEntity<ApiResponse<CardOneResponseDto>> getCardWithRedis(@PathVariable("cardId") Long cardId) {
         CardOneResponseDto cardOneResponseDto = cardService.getCard(cardId);
         return ResponseEntity.ok(ApiResponse.success("카드 조회 성공", cardOneResponseDto));
     }
 
-    @GetMapping("/bord/todo/cards/ranking")
+    @GetMapping("/board/todo/cards/ranking")
     public ResponseEntity<ApiResponse<List<CardRankingResponseDto>>> getCardRanking(@RequestParam(defaultValue = "10") int topN) {
         List<CardRankingResponseDto> cardRanking = cardService.getCardRanking(topN);
         return ResponseEntity.ok(ApiResponse.success("카드 랭킹 조회 성공", cardRanking));
     }
 
-    @PutMapping("/{workspaceId}/bord/todo/cards/{cardId}")
+    @PutMapping("/{workspaceId}/board/todo/cards/{cardId}")
     public ResponseEntity<ApiResponse<CardResponseDto>> putCard(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable("workspaceId") Long workspaceId,
@@ -63,7 +63,7 @@ public class CardController {
         return ResponseEntity.ok(ApiResponse.success("카드 수정 성공", cardResponseDto));
     }
 
-    @PatchMapping("/{workspaceId}/bord/todo/cards/{cardId}")
+    @PatchMapping("/{workspaceId}/board/todo/cards/{cardId}")
     public ResponseEntity<ApiResponse<Long>> deleteCard(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable("workspaceId") Long workspaceId,
@@ -72,7 +72,7 @@ public class CardController {
         return ResponseEntity.ok(ApiResponse.success("카드 삭제 성공", cardId));
     }
 
-    @PatchMapping("/bord/todo/cards/{cardId}")
+    @PatchMapping("/board/todo/cards/{cardId}")
     public ResponseEntity<ApiResponse<CardOneResponseDto>> addManager(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable("cardId") Long cardId,
@@ -82,7 +82,7 @@ public class CardController {
         return ResponseEntity.ok(ApiResponse.success("멤버를 추가했습니다.", cardOneResponseDto));
     }
 
-    @PatchMapping("/bord/todo/cards/{cardId}/status")
+    @PatchMapping("/board/todo/cards/{cardId}/status")
     public ResponseEntity<ApiResponse<CardOneResponseDto>> patchCardStatus(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable("cardId") Long cardId,
