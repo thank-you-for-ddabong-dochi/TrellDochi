@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -56,7 +57,48 @@ public class WorkSpaceQueryDslRepositoryImpl implements WorkSpaceQueryDslReposit
     }
 
     @Override
+    @Transactional
     public void deleteRelationBoards(Long workspaceId) {
+
+        queryFactory.update(comment)
+                .set(comment.isDeleted, true)
+                .where(
+                        comment.card.id.in(
+                                JPAExpressions
+                                        .select(card.id)
+                                        .from(card)
+                                        .join(card.todolist, todoList)
+                                        .join(todoList.board, board)
+                                        .join(board.workSpace, workSpace)
+                                        .where(workSpace.id.eq(workspaceId))
+                        ))
+                .execute();
+
+        queryFactory.update(card)
+                .set(card.isDeleted, true)
+                .where(
+                        card.todolist.id.in(
+                                JPAExpressions
+                                        .select(todoList.id)
+                                        .from(todoList)
+                                        .join(todoList.board, board)
+                                        .join(board.workSpace, workSpace)
+                                        .where(workSpace.id.eq(workspaceId))
+                        ))
+                .execute();
+
+        queryFactory.update(todoList)
+                .set(todoList.isDeleted, true)
+                .where(
+                        todoList.board.id.in(
+                                JPAExpressions
+                                        .select(board.id)
+                                        .from(board)
+                                        .join(board.workSpace, workSpace)
+                                        .where(workSpace.id.eq(workspaceId))
+                        )
+                )
+                .execute();
 
         queryFactory
                 .update(board)
@@ -66,47 +108,11 @@ public class WorkSpaceQueryDslRepositoryImpl implements WorkSpaceQueryDslReposit
                 )
                 .execute();
 
-        // todoList softDelete
-        queryFactory.update(todoList)
-                .set(todoList.isDeleted, true)
-                .where(
-                        todoList.id.in(
-                                JPAExpressions
-                                        .select(board.id)
-                                        .from(board)
-                                        .join(board.workSpace, workSpace)
-                                        .where(workSpace.id.eq(workspaceId))
-                        )
 
-                )
+        queryFactory
+                .update(workSpace)
+                .set(workSpace.isDeleted, true)
+                .where(workSpace.id.eq(workspaceId))
                 .execute();
-
-        queryFactory.update(card)
-                .set(card.isDeleted, true)
-                .where(card.todolist.id.in(
-                        JPAExpressions
-                                .select(todoList.id)
-                                .from(todoList)
-                                .join(todoList.board, board)
-                                .join(board.workSpace, workSpace)
-                                .where(workSpace.id.eq(workspaceId))
-                ))
-                .execute();
-
-        queryFactory.update(comment)
-                .set(comment.isDeleted, true)
-                .where(comment.card.id.in(
-                        JPAExpressions
-                                .select(card.id)
-                                .from(card)
-                                .join(card.todolist, todoList)
-                                .join(todoList.board, board)
-                                .join(board.workSpace, workSpace)
-                                .where(workSpace.id.eq(workspaceId))
-                ))
-                .execute();
-
-        entityManager.flush();
-        entityManager.clear();
     }
 }
