@@ -1,0 +1,14 @@
+cloud:
+  aws:
+    credentials:
+      access-key: dummyAccessKey
+      secret-key: dummySecretKey
+    region:
+      static: us-east-1
+    s3:
+      bucket: dummyBucket
+
+
+
+slack:
+  webhook-url: http://dummy-webhook-url

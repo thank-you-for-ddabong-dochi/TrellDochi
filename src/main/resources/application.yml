@@ -17,7 +17,7 @@ spring:
         format_sql: false
   data:
     redis:
-      host: localhost
+      host: 13.124.17.212
       port: 6379
 
 allowed:
