@@ -53,7 +53,26 @@ TrellDochi와와 함께라면 신속하고 효율적인 협업으로 ****를 하
 
 
 ## 기술 스택
-![image](https://user-images.githubusercontent.com/71266602/144960113-67c6269a-a7f9-4a85-ab92-a6755543ead6.png)
+
+## 개발 환경 🛠️
+
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![JPA](https://img.shields.io/badge/JPA-000000?style=for-the-badge&logo=hibernate&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white)
+![QueryDSL](https://img.shields.io/badge/QueryDSL-00B2FF?style=for-the-badge)
+![JUnit 5](https://img.shields.io/badge/JUnit_5-25A162?style=for-the-badge&logo=junit5&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+
+## 데이터베이스 💾
+
+![AWS RDS](https://img.shields.io/badge/AWS_RDS-527FFF?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![AWS S3](https://img.shields.io/badge/AWS_S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white)
+![AWS EC2](https://img.shields.io/badge/AWS_EC2-FF9900?style=for-the-badge&logo=amazon-ec2&logoColor=white)
+
+## CI/CD 🔄
+
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white)
 
 ## Documents
 - [API](https://oasis-pocket-331.notion.site/API-4cdb0639248d4a13baa68d198248c99c)
