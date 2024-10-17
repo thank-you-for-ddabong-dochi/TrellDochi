@@ -1,6 +1,6 @@
-<center>
-    ![image](https://github.com/user-attachments/assets/1050b0ac-8c8f-4d89-8467-256b87f451af)
 
+![image](https://github.com/user-attachments/assets/764262d1-4d67-46a6-9597-acca17f653b1)
+<center>
     <div>
         <strong>
         따봉도치와 함께하는 협업 툴, TrellDochi
