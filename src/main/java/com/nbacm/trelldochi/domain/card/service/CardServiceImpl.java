@@ -174,7 +174,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public Page<Card> searchCards(String title, String explanation, LocalDate deadline, String managerName, Long boardId, Pageable pageable) {
-        return cardRepository.searchCards(title, explanation, deadline, managerName, boardId, pageable);
+        return cardRepository.searchCardPaginationByFilter(title,explanation, deadline, managerName, boardId, pageable);
     }
 
     private WorkSpaceMember isAuthInWorkSpace(CustomUserDetails customUserDetails, Long workspaceId){
