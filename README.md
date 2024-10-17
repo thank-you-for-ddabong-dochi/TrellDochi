@@ -1,7 +1,5 @@
-![image (9)](https://github.com/user-attachments/assets/47b47f72-4ca0-462e-8bfa-ed6e052235db)
-
 <center>
-    <img alt="TrellDochi" src="https://i.imgur.com/YBqiYK5.png" />
+    <img alt="TrellDochi" src="[https://i.imgur.com/YBqiYK5.png](https://github.com/user-attachments/assets/47b47f72-4ca0-462e-8bfa-ed6e052235db)" />
     <div>
         <strong>
         따봉도치와 함께하는 협업 툴, TrellDochi
