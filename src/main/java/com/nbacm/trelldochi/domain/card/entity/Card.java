@@ -44,6 +44,9 @@ public class Card {
     @Column(nullable = false)
     private boolean isDeleted = false;
 
+    @Version
+    private Long version;  // 버전 필드, 이 필드로 동시성 제어를 수행
+
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 

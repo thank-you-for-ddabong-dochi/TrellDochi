@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public interface CardService {
@@ -32,6 +34,8 @@ public interface CardService {
     CardResponseDto createCard(CustomUserDetails customUserDetails, Long workspaceId, Long todoListId, CardRequestDto cardRequestDto);
 
     CardOneResponseDto getCard(Long cardId);
+
+    CardOneResponseDto getCardWithCache(Long cardId, CustomUserDetails customUserDetails);
 
     CardResponseDto putCard(CustomUserDetails customUserDetails, Long workspaceId, Long cardId, CardPatchRequestDto cardPatchRequestDto);
 
@@ -43,4 +47,5 @@ public interface CardService {
 
     Page<Card> searchCards(String title, String explanation, LocalDate deadline, String managerName, Long boardId, Pageable pageable);
 
+    List<CardRankingResponseDto> getCardRanking(int topN);
 }
