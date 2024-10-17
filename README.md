@@ -10,15 +10,7 @@
 
 
 
-**[팀 노션 바로가기]([[https://oasis-pocket-331.notion.site/Team-42-a9c016b18bf340fc8666a97c0089fcd7](https://teamsparta.notion.site/13-12317eb3e88b42d586d0c5f352501441](https://www.notion.so/13-1225fcb520d38040a29dddb141016a34?pvs=4)))**
-
-테스트 계정
-
-|ID|PW|
-|--|--|
-|test1@gmail.com|token|
-|test2@gmail.com|token|
-
+**[팀 노션 바로가기](https://www.notion.so/13-1225fcb520d38040a29dddb141016a34?pvs=4)**
 
 
 ## ✍️ Writing
