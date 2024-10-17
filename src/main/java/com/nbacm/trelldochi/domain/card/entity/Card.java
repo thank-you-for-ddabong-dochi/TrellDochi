@@ -17,7 +17,7 @@ import java.util.List;
 
 @Getter
 @Entity
-@Table(name = "card")
+@Table(name = "card",indexes = @Index(name = "idx_card_deadline",columnList = "deadline"))
 @NoArgsConstructor
 public class Card {
 
