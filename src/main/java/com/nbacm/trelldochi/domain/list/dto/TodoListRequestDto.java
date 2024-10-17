@@ -9,12 +9,10 @@ import java.util.List;
 public class        TodoListRequestDto {
 
     private String title;
-    private int listOrder;
 
     public TodoListRequestDto() {}
 
-    public TodoListRequestDto(String title, int listOrder) {
+    public TodoListRequestDto(String title) {
         this.title = title;
-        this.listOrder = listOrder;
     }
 }
