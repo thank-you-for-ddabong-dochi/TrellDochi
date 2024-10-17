@@ -24,6 +24,7 @@ TrellDochi와와 함께라면 신속하고 효율적인 협업으로 ****를 하
 <br/>
 
 
+
 ## 프로젝트 기능
 
 ✔️ 프로젝트 전체 관리
@@ -98,7 +99,7 @@ TrellDochi와와 함께라면 신속하고 효율적인 협업으로 ****를 하
 <table>
     <tr>
         <td align="center"><img src="https://github.com/user-attachments/assets/c87b8c6d-1795-4947-ba87-0e58c484a655" width="80"></td>
-        <td align="center"><img src="(https://github.com/user-attachments/assets/831cf705-696b-403d-bc9f-0949c2c9e335" width="80">
+        <td align="center"><img src="https://github.com/user-attachments/assets/9a321359-37ff-424e-845c-3c4a373a1bc9" width="80">
         </td>
         <td align="center"><img src="https://github.com/user-attachments/assets/6d11aad1-c939-4904-ba83-1a09811934e1" width="80"></td>
         <td align="center"><img src="https://github.com/user-attachments/assets/0458723b-f140-40bd-b160-832e8453b919" width="80"></td>
