@@ -10,7 +10,6 @@ import com.nbacm.trelldochi.domain.card.exception.CardNotFoundException;
 import com.nbacm.trelldochi.domain.card.exception.CardNotUpdate;
 import com.nbacm.trelldochi.domain.card.repository.CardManagerRepository;
 import com.nbacm.trelldochi.domain.card.repository.CardRepository;
-import com.nbacm.trelldochi.domain.comment.entity.Comment;
 import com.nbacm.trelldochi.domain.comment.repository.CommentRepository;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.list.entity.TodoList;

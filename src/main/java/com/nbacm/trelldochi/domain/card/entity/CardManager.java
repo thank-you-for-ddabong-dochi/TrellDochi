@@ -1,5 +1,6 @@
 package com.nbacm.trelldochi.domain.card.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nbacm.trelldochi.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class CardManager {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id")
+    @JsonIgnore
     private Card card;
 
     @ManyToOne(fetch = FetchType.LAZY)

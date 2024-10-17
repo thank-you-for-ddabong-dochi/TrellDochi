@@ -17,7 +17,7 @@ import java.util.List;
 
 @Getter
 @Entity
-@Table(name = "card")
+@Table(name = "card",indexes = @Index(name = "idx_card_deadline",columnList = "deadline"))
 @NoArgsConstructor
 public class Card {
 
@@ -55,6 +55,7 @@ public class Card {
 
     @BatchSize(size = 10)
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<CardManager> managerList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

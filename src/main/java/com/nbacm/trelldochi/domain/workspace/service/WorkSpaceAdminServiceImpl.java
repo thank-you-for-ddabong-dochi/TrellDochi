@@ -71,7 +71,6 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
         );
         User user = userRepository.findByEmailOrElseThrow(email);
         isOwner(user.getId(), workSpace.getOwner().getId());
-        workSpace.delete();
         workSpaceRepository.deleteRelationBoards(workspaceId);
     }
 
