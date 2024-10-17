@@ -81,7 +81,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
         WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(()
                 -> new WorkSpaceNotFoundException("워크 스페이스가 없습니다.")
         );
-        isOwner(memberId, workSpace.getOwner().getId());
+        isNotOwner(memberId, workSpace.getOwner().getId());
 
         WorkSpaceMember workSpaceMember = workSpaceMemberRepository.findByUserIdAndWorkspaceId(memberId, workspaceId).orElseThrow(
                 () -> new WorkSpaceMemberNotFoundException("워크 스페이스 멤버가 존재하지 않습니다.")
@@ -102,7 +102,7 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
         WorkSpace workSpace = workSpaceRepository.findById(workspaceId).orElseThrow(()
                 -> new WorkSpaceNotFoundException("워크 스페이스가 없습니다.")
         );
-        isOwner(memberId, workSpace.getOwner().getId());
+        isNotOwner(memberId, workSpace.getOwner().getId());
 
         workSpaceMemberRepository.delete(workSpaceMember);
     }
@@ -121,6 +121,11 @@ public class WorkSpaceAdminServiceImpl implements WorkSpaceAdminService {
     private void isOwner(Long userid, Long ownerId) {
         if (!ownerId.equals(userid)) {
             throw new WorkSpaceAccessDeniedException("워크 스페이스 소유자가 아닙니다.");
+        };
+    }
+    private void isNotOwner(Long userid, Long ownerId){
+        if (ownerId.equals(userid)) {
+            throw new WorkSpaceAccessDeniedException("워크 스페이스 소유자는 수정할 수 없습니다..");
         };
     }
 }

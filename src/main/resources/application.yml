@@ -1,10 +1,10 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://nbcamplus.cr46m4a04sqq.ap-northeast-2.rds.amazonaws.com:3306/trelldochi
-    url: jdbc:mysql://localhost:3306/trelldochi?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://nbcamplus.cr46m4a04sqq.ap-northeast-2.rds.amazonaws.com:3306/trelldochi
+#    url: jdbc:mysql://localhost:3306/trelldochi?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
-    password: root
+    password: d7845126
     #password: root
 
   jpa:
@@ -17,11 +17,8 @@ spring:
         format_sql: false
   data:
     redis:
-      host: localhost
+      host: 13.124.17.212
       port: 6379
-
-allowed:
-  ip: 13.124.17.212  # 메시지를 처리할 허용된 IP
 
 server:
   servlet:
@@ -29,7 +26,7 @@ server:
       charset: UTF-8
       enabled: true
       force: true
-  port: 8080
+  port: 8081
 
 slack:
   webhook-url: ${SLACK_WEBHOOK_URL}

@@ -16,6 +16,8 @@ public class RedisMessageSubscriber implements MessageListener {
     @Value("${slack.webhook-url}")
     String slackWebhookUrl;
 
+
+
     private final NotificationService notificationService;
     private final RedisMessageDuplicator deduplicator;
 
