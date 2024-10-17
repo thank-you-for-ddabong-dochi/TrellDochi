@@ -29,7 +29,7 @@ server:
   port: 8080
 
 slack:
-  webhook-url: "https://hooks.slack.com/services/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"
+  webhook-url: ${SLACK_WEBHOOK_URL}
 
 
 jwt:
