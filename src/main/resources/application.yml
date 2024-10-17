@@ -4,7 +4,7 @@ spring:
 #    url: jdbc:mysql://nbcamplus.cr46m4a04sqq.ap-northeast-2.rds.amazonaws.com:3306/trelldochi
     url: jdbc:mysql://localhost:3306/trelldochi?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
-    password: "!mysql123"
+    password: root
     #password: root
 
   jpa:
