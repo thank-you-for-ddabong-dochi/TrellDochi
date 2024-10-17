@@ -29,6 +29,7 @@ public class RedisMessageSubscriber implements MessageListener {
             log.info("수신된 메시지: {}", notification);
 
             if (deduplicator.isNewMessage(notification)) {
+                log.debug("Slack 알림 전송 시도 중...");
                 notificationService.sendSlackNotification(slackWebhookUrl, notification);
                 log.info("Slack으로 알림 전송 완료: {}", notification);
             } else {
