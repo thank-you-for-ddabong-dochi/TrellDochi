@@ -4,7 +4,6 @@ import com.nbacm.trelldochi.domain.card.dto.*;
 import com.nbacm.trelldochi.domain.card.entity.Card;
 import com.nbacm.trelldochi.domain.card.service.CardService;
 import com.nbacm.trelldochi.domain.common.advice.ApiResponse;
-import com.nbacm.trelldochi.domain.common.dto.AuthUser;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

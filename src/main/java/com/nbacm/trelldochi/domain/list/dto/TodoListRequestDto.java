@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class TodoListRequestDto {
+public class        TodoListRequestDto {
 
     private String title;
 
