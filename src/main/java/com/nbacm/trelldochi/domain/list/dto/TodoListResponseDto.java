@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 public class TodoListResponseDto {
 
+    private Long listId;
     private String title;
     private int listOrder;
     private List<CardSummaryDto> cardList;
@@ -18,6 +19,7 @@ public class TodoListResponseDto {
     public TodoListResponseDto() {}
 
     public TodoListResponseDto(TodoList todoList) {
+        this.listId = todoList.getId();
         this.title = todoList.getTitle();
         this.listOrder = todoList.getListOrder();
         if(todoList.getCardList() != null) {
