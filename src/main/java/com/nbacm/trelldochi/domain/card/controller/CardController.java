@@ -15,7 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/workspace/")
@@ -39,18 +38,6 @@ public class CardController {
     public ResponseEntity<ApiResponse<CardOneResponseDto>> getCard(@PathVariable("cardId") Long cardId) {
         CardOneResponseDto cardOneResponseDto = cardService.getCard(cardId);
         return ResponseEntity.ok(ApiResponse.success("카드 조회 성공", cardOneResponseDto));
-    }
-
-    @GetMapping("/board/todo/cards/{cardId}/cache")
-    public ResponseEntity<ApiResponse<CardOneResponseDto>> getCardWithRedis(@PathVariable("cardId") Long cardId) {
-        CardOneResponseDto cardOneResponseDto = cardService.getCard(cardId);
-        return ResponseEntity.ok(ApiResponse.success("카드 조회 성공", cardOneResponseDto));
-    }
-
-    @GetMapping("/board/todo/cards/ranking")
-    public ResponseEntity<ApiResponse<List<CardRankingResponseDto>>> getCardRanking(@RequestParam(defaultValue = "10") int topN) {
-        List<CardRankingResponseDto> cardRanking = cardService.getCardRanking(topN);
-        return ResponseEntity.ok(ApiResponse.success("카드 랭킹 조회 성공", cardRanking));
     }
 
     @PutMapping("/{workspaceId}/board/todo/cards/{cardId}")
