@@ -1,6 +1,7 @@
 package com.nbacm.trelldochi.domain.common.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -12,23 +13,37 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.time.Duration;
 
 @Component
-
+@Slf4j
 public class RedisMessageDuplicator {
     private final RedisTemplate<String, String> redisTemplate;
+    private static final Duration EXPIRATION_TIME = Duration.ofSeconds(30); // 30초로 변경
 
     public RedisMessageDuplicator(RedisTemplate<String, String> customStringRedisTemplate) {
         this.redisTemplate = customStringRedisTemplate;
     }
+
     public boolean isNewMessage(String message) {
-        String messageHash = calculateHash(message);
+        String messageWithTimestamp = message + "_" + System.currentTimeMillis();
+        String messageHash = calculateHash(messageWithTimestamp);
+        log.debug("생성된 메시지 해시: {}", messageHash);
 
         String key = "processed_message:" + messageHash;
 
-        // Redis 명령어로 SETNX와 EXPIRE를 원자적으로 처리
-        Boolean isNew = redisTemplate.opsForValue().setIfAbsent(key, "1", Duration.ofMinutes(5));
+        try {
+            Boolean isNew = redisTemplate.opsForValue().setIfAbsent(key, "1", EXPIRATION_TIME);
 
-        // isNew가 TRUE면 새로운 메시지, FALSE면 중복 메시지
-        return Boolean.TRUE.equals(isNew);
+            if (Boolean.TRUE.equals(isNew)) {
+                log.debug("새로운 메시지 감지: {}", messageWithTimestamp);
+                return true;
+            } else {
+                log.debug("중복 메시지 감지: {}", messageWithTimestamp);
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("Redis 작업 중 오류 발생", e);
+            // Redis 연결 오류 시 메시지를 새 메시지로 처리
+            return true;
+        }
     }
 
     private String calculateHash(String message) {
@@ -37,6 +52,7 @@ public class RedisMessageDuplicator {
             byte[] encodedhash = digest.digest(message.getBytes(StandardCharsets.UTF_8));
             return bytesToHex(encodedhash);
         } catch (Exception e) {
+            log.error("메시지 해시 계산 중 오류 발생", e);
             throw new RuntimeException("메시지 해시 계산 중 오류 발생", e);
         }
     }
