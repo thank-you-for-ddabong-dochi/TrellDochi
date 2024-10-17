@@ -16,8 +16,7 @@ public class RedisMessageSubscriber implements MessageListener {
     @Value("${slack.webhook-url}")
     String slackWebhookUrl;
 
-    @Value("${allowed.ip}")
-    String allowedIp;
+
 
     private final NotificationService notificationService;
     private final RedisMessageDuplicator deduplicator;
@@ -33,11 +32,6 @@ public class RedisMessageSubscriber implements MessageListener {
         try {
             String currentIp = InetAddress.getLocalHost().getHostAddress(); // 현재 서버 IP 가져오기
             log.info("현재 서버 IP: {}", currentIp);
-
-            if (!currentIp.equals(allowedIp)) {
-                log.info("허용된 IP가 아니므로 메시지 처리하지 않음.");
-                return;
-            }
 
             String notification = new String(message.getBody());
             log.info("수신된 메시지: {}", notification);

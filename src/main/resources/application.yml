@@ -20,9 +20,6 @@ spring:
       host: 13.124.17.212
       port: 6379
 
-allowed:
-  ip: 13.124.17.212  # 메시지를 처리할 허용된 IP
-
 server:
   servlet:
     encoding:
