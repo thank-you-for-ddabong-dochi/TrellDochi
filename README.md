@@ -85,7 +85,7 @@ TrellDochi와와 함께라면 신속하고 효율적인 협업으로 ****를 하
 ![AWS S3](https://img.shields.io/badge/AWS_S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white)
 
 ## Documents
-- [API](https://oasis-pocket-331.notion.site/API-4cdb0639248d4a13baa68d198248c99c)
+- [API](https://documenter.getpostman.com/view/24053165/2sAXxV7AgF)
 - [Socket](https://oasis-pocket-331.notion.site/Socket-b983b1ae803144ab92b4c966213e6c68)
 - [Design](https://oasis-pocket-331.notion.site/Design-b3a0e906bc894d22a91676f2f649da2c)
 - [Hooks](https://oasis-pocket-331.notion.site/Hooks-587a51c584d74055a1e560f59a8d1345)
