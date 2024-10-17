@@ -1,4 +1,4 @@
-package com.nbacm.trelldochi.domain.board;
+package com.nbacm.trelldochi.domain.board.service;
 
 import com.nbacm.trelldochi.domain.attachment.service.AwsS3Service;
 import com.nbacm.trelldochi.domain.board.dto.BoardRequestDto;
@@ -6,7 +6,6 @@ import com.nbacm.trelldochi.domain.board.dto.BoardResponseDto;
 import com.nbacm.trelldochi.domain.board.entity.Board;
 import com.nbacm.trelldochi.domain.board.repository.BoardQueryDslRepositoryImpl;
 import com.nbacm.trelldochi.domain.board.repository.BoardRepository;
-import com.nbacm.trelldochi.domain.board.service.BoardServiceImpl;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import com.nbacm.trelldochi.domain.common.exception.NotFoundException;
 import com.nbacm.trelldochi.domain.notifications.service.NotificationService;
@@ -198,7 +197,22 @@ public class BoardServiceTest {
         verify(boardQueryDslRepositoryImpl, times(1)).deleteRelations(anyLong());
     }
 
+    // 보드 삭제 실패 - 보드가 이미 삭제됨
+    @Test
+    public void testDeleteBoard_AlreadyDeleted() throws Exception {
 
+        // Given
+        setIsDeletedViaReflection(board, true);
+        when(userRepository.findByEmailOrElseThrow(anyString())).thenReturn(user);
+        when(workSpaceMemberRepository.findByUserIdAndWorkspaceId(anyLong(), anyLong()))
+                .thenReturn(Optional.of(workSpaceMember));
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
+
+        // When Then
+        assertThrows(ResponseStatusException.class, () -> {
+            boardService.deleteBoard(1L, 1L, userDetails);
+        });
+    }
 
 
 
@@ -211,6 +225,12 @@ public class BoardServiceTest {
         Field idField = target.getClass().getDeclaredField("id");  // "id" 필드 가져오기
         idField.setAccessible(true);  // private 필드 접근 가능하도록 설정
         idField.set(target, idValue);  // 필드에 값 설정
+    }
+
+    private void setIsDeletedViaReflection(Object target, Boolean isDeleted) throws Exception {
+        Field isDeletedField = target.getClass().getDeclaredField("isDeleted");
+        isDeletedField.setAccessible(true);
+        isDeletedField.set(target, isDeleted);
     }
 
 
