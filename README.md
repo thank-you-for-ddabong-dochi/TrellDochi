@@ -1,5 +1,6 @@
 <center>
-    <img alt="TrellDochi" src="[https://i.imgur.com/YBqiYK5.png](https://github.com/user-attachments/assets/47b47f72-4ca0-462e-8bfa-ed6e052235db)" />
+    ![image](https://github.com/user-attachments/assets/1050b0ac-8c8f-4d89-8467-256b87f451af)
+
     <div>
         <strong>
         따봉도치와 함께하는 협업 툴, TrellDochi
