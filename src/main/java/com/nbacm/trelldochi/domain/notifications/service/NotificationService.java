@@ -9,12 +9,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,16 +36,8 @@ public class NotificationService {
         }
     }
 
-    /**
-     * Slack으로 알림 전송
-     * @param webhookUrl Slack Webhook URL
-     * @param jsonMessage JSON 형식의 메시지
-     */
-    public void sendSlackNotification(String webhookUrl, String jsonMessage) {
+    public void sendSlackNotification(String webhookUrl, String message) {
         try {
-            log.info("Received message for Slack: {}", jsonMessage);
-
-            String message = extractMessage(jsonMessage);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -56,15 +46,15 @@ public class NotificationService {
             payload.put("text", message);
 
             String jsonPayload = objectMapper.writeValueAsString(payload);
-
-            log.debug("Sending payload to Slack: {}", jsonPayload);
+            log.debug("Slack용 JSON 페이로드 준비 완료: {}", jsonPayload);
 
             HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
 
+            log.debug("Slack으로 요청 전송 중...");
             String response = restTemplate.postForObject(webhookUrl, request, String.class);
-            log.info("Slack notification sent successfully. Response: {}", response);
+            log.info("Slack 알림 전송 성공. 응답: {}", response);
         } catch (Exception e) {
-            log.error("Error sending Slack notification: ", e);
+            log.error("Slack 알림 전송 중 오류 발생. Webhook URL: {}, 메시지: {}, 오류: ", webhookUrl, message, e);
         }
     }
 
@@ -92,5 +82,3 @@ public class NotificationService {
         }
     }
 }
-
-

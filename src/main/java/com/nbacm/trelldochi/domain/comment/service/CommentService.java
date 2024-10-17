@@ -1,6 +1,6 @@
 package com.nbacm.trelldochi.domain.comment.service;
 
-import com.nbacm.trelldochi.domain.comment.dot.CommentRequestDto;
+import com.nbacm.trelldochi.domain.comment.dto.CommentRequestDto;
 import com.nbacm.trelldochi.domain.comment.dto.CommentResponseDto;
 import com.nbacm.trelldochi.domain.common.dto.CustomUserDetails;
 import org.springframework.stereotype.Service;

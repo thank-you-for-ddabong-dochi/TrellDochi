@@ -1,7 +1,7 @@
 package com.nbacm.trelldochi.domain.comment.entity;
 
 import com.nbacm.trelldochi.domain.card.entity.Card;
-import com.nbacm.trelldochi.domain.comment.dot.CommentRequestDto;
+import com.nbacm.trelldochi.domain.comment.dto.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

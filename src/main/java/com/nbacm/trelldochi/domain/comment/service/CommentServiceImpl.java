@@ -3,7 +3,7 @@ package com.nbacm.trelldochi.domain.comment.service;
 import com.nbacm.trelldochi.domain.card.entity.Card;
 import com.nbacm.trelldochi.domain.card.exception.CardNotFoundException;
 import com.nbacm.trelldochi.domain.card.repository.CardRepository;
-import com.nbacm.trelldochi.domain.comment.dot.CommentRequestDto;
+import com.nbacm.trelldochi.domain.comment.dto.CommentRequestDto;
 import com.nbacm.trelldochi.domain.comment.dto.CommentResponseDto;
 import com.nbacm.trelldochi.domain.comment.entity.Comment;
 import com.nbacm.trelldochi.domain.comment.exception.CommentForbiddenException;

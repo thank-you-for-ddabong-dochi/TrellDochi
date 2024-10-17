@@ -42,6 +42,8 @@ public class QCard extends EntityPathBase<Card> {
 
     public final com.nbacm.trelldochi.domain.list.entity.QTodoList todolist;
 
+    public final NumberPath<Long> version = createNumber("version", Long.class);
+
     public final NumberPath<Integer> viewCount = createNumber("viewCount", Integer.class);
 
     public QCard(String variable) {
