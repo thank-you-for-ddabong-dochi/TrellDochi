@@ -190,7 +190,7 @@ public class CardServiceImpl implements CardService {
         return findWorkSpaceMember;
     }
 
-    private WorkSpaceMember isAuthInWorkSpaceAndLock(CustomUserDetails customUserDetails, Long workspaceId){
+    WorkSpaceMember isAuthInWorkSpaceAndLock(CustomUserDetails customUserDetails, Long workspaceId){
         // 워크 스페이스에 권한이 없는 경우(추가가 안된 경우)
         WorkSpaceMember findWorkSpaceMember = workSpaceRepository.findByUserEmailAndWorkspaceIdAndLock(customUserDetails.getEmail(), workspaceId)
                 .orElseThrow(() -> new WorkSpaceAccessDeniedException("work space에 접근 권한이 없습니다."));
