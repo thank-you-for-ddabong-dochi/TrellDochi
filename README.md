@@ -58,8 +58,6 @@ TrellDochi와와 함께라면 신속하고 효율적인 협업으로 ****를 하
 - 댓글 작성, 수정, 삭제 권한은 팀원의 역할에 따라 달라지며, 읽기 전용 멤버는 댓글 작성이 불가능합니다.
 
 
-## 기술 스택
-
 ## 개발 환경 🛠️
 
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
@@ -71,14 +69,18 @@ TrellDochi와와 함께라면 신속하고 효율적인 협업으로 ****를 하
 
 ## 데이터베이스 💾
 
-![AWS RDS](https://img.shields.io/badge/AWS_RDS-527FFF?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![AWS S3](https://img.shields.io/badge/AWS_S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white)
-![AWS EC2](https://img.shields.io/badge/AWS_EC2-FF9900?style=for-the-badge&logo=amazon-ec2&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
 ## CI/CD 🔄
 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white)
+
+## AWS ☁️
+
+![AWS EC2](https://img.shields.io/badge/AWS_EC2-FF9900?style=for-the-badge&logo=amazon-ec2&logoColor=white)
+![AWS RDS](https://img.shields.io/badge/AWS_RDS-527FFF?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![AWS S3](https://img.shields.io/badge/AWS_S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white)
 
 ## Documents
 - [API](https://oasis-pocket-331.notion.site/API-4cdb0639248d4a13baa68d198248c99c)
