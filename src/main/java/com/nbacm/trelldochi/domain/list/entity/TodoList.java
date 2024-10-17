@@ -41,7 +41,6 @@ public class TodoList {
 
     public void update(TodoListRequestDto todoListRequestDto) {
         this.title = todoListRequestDto.getTitle();
-        this.listOrder = todoListRequestDto.getListOrder();
     }
 
     public void addCard(Card card) {
